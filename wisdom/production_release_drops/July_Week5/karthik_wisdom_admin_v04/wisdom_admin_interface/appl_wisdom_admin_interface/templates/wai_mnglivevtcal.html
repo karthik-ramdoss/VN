@@ -7,14 +7,22 @@
 {% block ddlclient %}
 	<select id="ddlheadclie" name="ddlheadclie" class="form-control">    
 	{% for cd in clidet %}
-	   	<option value="{{ cd.pk_client }}">{{ cd.client_name }}</option>
+    	{% if request.session.clientid|add:"0" == cd.pk_client|add:"0" %}
+	   	<option value="{{ cd.pk_client }}" selected="selected">{{ cd.client_name }}</option>
+        {% else %}
+        <option value="{{ cd.pk_client }}">{{ cd.client_name }}</option>
+        {% endif %}
 	{% endfor %}
     </select>
 {% endblock %}
 {% block ddlvenue %}
 	<select id="ddlheadvenu" name="ddlheadvenu" class="form-control">    
 	{% for vn in vendet %}
-	   	<option value="{{ vn.pk_venue }}">{{ vn.venue_name }}</option>
+    	{% if request.session.venueid|add:"0" == vn.pk_venue|add:"0" %}
+	   	<option value="{{ vn.pk_venue }}" selected="selected">{{ vn.venue_name }}</option>
+        {% else %}
+        <option value="{{ vn.pk_venue }}">{{ vn.venue_name }}</option>
+        {% endif %}
 	{% endfor %}
     </select>
 {% endblock %}

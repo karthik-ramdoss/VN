@@ -78,6 +78,8 @@ def wai_login(request):
 				dict(zip([col[0] for col in desc], row))
 				for row in clidetcur.fetchall()
 			]
+			if 'clientid' in request.session:
+				clientid = request.session["clientid"]
 			for row in clidet:
 				if clientid == "":
 					clientid = row["pk_client"]
@@ -187,6 +189,9 @@ def wai_chgpwd(request):
 		        pgcur.close()
 
 			clientid = ""
+			if 'clientid' in request.session:
+				clientid = request.session["clientid"]
+
 			clidetcur = connection.cursor()
 			clidetcur.execute("select pk_client, client_name from mart.dim_client order by client_name asc;")
 			desc = clidetcur.description
@@ -317,6 +322,9 @@ def wai_mngvalmas(request):
 		pgcur.close()
 
 		clientid = ""
+		if 'clientid' in request.session:
+			clientid = request.session["clientid"]
+
 		clidetcur = connection.cursor()
 		clidetcur.execute("select pk_client, client_name from mart.dim_client order by client_name asc;")
 		desc = clidetcur.description
@@ -416,6 +424,9 @@ def wai_mngpgvalmas(request):
 			pgcur.close()
 
 			clientid = ""
+			if 'clientid' in request.session:
+				clientid = request.session["clientid"]
+
 			clidetcur = connection.cursor()
 			clidetcur.execute("select pk_client, client_name from mart.dim_client order by client_name asc;")
 			desc = clidetcur.description
@@ -542,6 +553,9 @@ def createvalmas(request):
 			pgcur.close()
 
 			clientid = ""
+			if 'clientid' in request.session:
+				clientid = request.session["clientid"]
+
 			clidetcur = connection.cursor()
 			clidetcur.execute("select pk_client, client_name from mart.dim_client order by client_name asc;")
 			desc = clidetcur.description
@@ -756,6 +770,9 @@ def editvalmas(request):
 		pgcur.close()
 
 		clientid = ""
+		if 'clientid' in request.session:
+			clientid = request.session["clientid"]
+
 		clidetcur = connection.cursor()
 		clidetcur.execute("select pk_client, client_name from mart.dim_client order by client_name asc;")
 		desc = clidetcur.description
@@ -846,6 +863,9 @@ def wai_mngprojob(request):
 			        jobcursor.close()
 
 				clientid = ""
+				if 'clientid' in request.session:
+					clientid = request.session["clientid"]
+
 				clidetcur = connection.cursor()
 				clidetcur.execute("select pk_client, client_name from mart.dim_client order by client_name asc;")
 				desc = clidetcur.description
@@ -880,6 +900,9 @@ def wai_mngprojob(request):
 			        ddlcursor.close()
 
 				clientid = ""
+				if 'clientid' in request.session:
+					clientid = request.session["clientid"]
+
 				clidetcur = connection.cursor()
 				clidetcur.execute("select pk_client, client_name from mart.dim_client order by client_name asc;")
 				desc = clidetcur.description
@@ -914,6 +937,9 @@ def wai_mngprojob(request):
 		        ddlcursor.close()
 			
 			clientid = ""
+			if 'clientid' in request.session:
+				clientid = request.session["clientid"]
+
 			clidetcur = connection.cursor()
 			clidetcur.execute("select pk_client, client_name from mart.dim_client order by client_name asc;")
 			desc = clidetcur.description
@@ -1295,6 +1321,9 @@ def wai_mngprocmoni(request):
 		cursysdt = datetime.datetime.strptime(cursysdt, '%Y-%m-%d').strftime('%m/%d/%Y')
 
 		clientid = ""
+		if 'clientid' in request.session:
+			clientid = request.session["clientid"]
+
 		clidetcur = connection.cursor()
 		clidetcur.execute("select pk_client, client_name from mart.dim_client order by client_name asc;")
 		desc = clidetcur.description
@@ -1384,6 +1413,9 @@ def wai_procsjobs(request):
 			cursysdt = datetime.datetime.strptime(cursysdt, '%Y-%m-%d').strftime('%m/%d/%Y')
 
 			clientid = ""
+			if 'clientid' in request.session:
+				clientid = request.session["clientid"]
+
 			clidetcur = connection.cursor()
 			clidetcur.execute("select pk_client, client_name from mart.dim_client order by client_name asc;")
 			desc = clidetcur.description
@@ -1473,6 +1505,9 @@ def wai_mngcliven(request):
 		        clicur.close()
 			
 			clientid = ""
+			if 'clientid' in request.session:
+				clientid = request.session["clientid"]
+
 			clidetcur = connection.cursor()
 			clidetcur.execute("select pk_client, client_name from mart.dim_client order by client_name asc;")
 			desc = clidetcur.description
@@ -1825,6 +1860,9 @@ def wai_mngadmuser(request):
 			pgcur.close()
 			
 			clientid = ""
+			if 'clientid' in request.session:
+				clientid = request.session["clientid"]
+
 			clidetcur = connection.cursor()
 			clidetcur.execute("select pk_client, client_name from mart.dim_client order by client_name asc;")
 			desc = clidetcur.description
@@ -2075,6 +2113,9 @@ def wai_mngblacal(request):
 		blacaldetcur.close()
 	
 	clientid = ""
+	if 'clientid' in request.session:
+		clientid = request.session["clientid"]
+
 	clidetcur = connection.cursor()
 	clidetcur.execute("select pk_client, client_name from mart.dim_client order by client_name asc;")
 	desc = clidetcur.description
@@ -2139,6 +2180,9 @@ def wai_mnglevevtcal(request):
 	pgcur.close()
 	
 	clientid = ""
+	if 'clientid' in request.session:
+		clientid = request.session["clientid"]
+
 	clidetcur = connection.cursor()
 	clidetcur.execute("select pk_client, client_name from mart.dim_client order by client_name asc;")
 	desc = clidetcur.description
@@ -2200,6 +2244,9 @@ def wai_mnglivevt(request):
 		livnatdetcur.close()
 
 	clientid = ""
+	if 'clientid' in request.session:
+		clientid = request.session["clientid"]
+
 	clidetcur = connection.cursor()
 	clidetcur.execute("select pk_client, client_name from mart.dim_client order by client_name asc;")
 	desc = clidetcur.description
@@ -2240,6 +2287,9 @@ def wai_mngcon(request):
 	pgcur.close()
 
 	clientid = ""
+	if 'clientid' in request.session:
+		clientid = request.session["clientid"]
+
 	clidetcur = connection.cursor()
 	clidetcur.execute("select pk_client, client_name from mart.dim_client order by client_name asc;")
 	desc = clidetcur.description
@@ -2280,6 +2330,9 @@ def wai_mngsplact(request):
 	pgcur.close()
 	
 	clientid = ""
+	if 'clientid' in request.session:
+		clientid = request.session["clientid"]
+
 	clidetcur = connection.cursor()
 	clidetcur.execute("select pk_client, client_name from mart.dim_client order by client_name asc;")
 	desc = clidetcur.description
@@ -2319,6 +2372,9 @@ def wai_mngsplcrtrol(request):
 	pgcur.close()
 	
 	clientid = ""
+	if 'clientid' in request.session:
+		clientid = request.session["clientid"]
+
 	clidetcur = connection.cursor()
 	clidetcur.execute("select pk_client, client_name from mart.dim_client order by client_name asc;")
 	desc = clidetcur.description
@@ -2358,6 +2414,9 @@ def submit_role(request):
 	pgcur.close()
 	
 	clientid = ""
+	if 'clientid' in request.session:
+		clientid = request.session["clientid"]
+
 	clidetcur = connection.cursor()
 	clidetcur.execute("select pk_client, client_name from mart.dim_client order by client_name asc;")
 	desc = clidetcur.description
@@ -2406,7 +2465,7 @@ def submit_role(request):
 		#return HttpResponse(cmd_execute +" " +result)    
 		return render(request, 'wai_splrolessucc.html', {'hid': "42", 'usna': usem, 'ustyp': ustyp, 'pgdet': pgdet, 'clidet': clidet, 'vendet': vendet, 'cmd_execute': cmd_execute, 'result': "Splunk roles are created successfully" })
 	except Exception, e:
-		return render(request, 'wai_splrolessucc.html', {'hid': "42", 'usna': usem, 'ustyp': ustyp, 'pgdet': pgdet, 'clidet': clidet, 'vendet': vendet, 'result': "Could not create Role. "+ str(e) })
+		return render(request, 'wai_splrolessucc.html', {'hid': "42", 'usna': usem, 'ustyp': ustyp, 'pgdet': pgdet, 'clidet': clidet, 'vendet': vendet, 'result': e })
 
 #Splunk Create Roles Ends
     
@@ -2428,6 +2487,9 @@ def wai_mngsplcrtusr(request):
 	pgcur.close()
 	
 	clientid = ""
+	if 'clientid' in request.session:
+		clientid = request.session["clientid"]
+
 	clidetcur = connection.cursor()
 	clidetcur.execute("select pk_client, client_name from mart.dim_client order by client_name asc;")
 	desc = clidetcur.description
@@ -2467,6 +2529,9 @@ def submit_user(request):
 	pgcur.close()
 	
 	clientid = ""
+	if 'clientid' in request.session:
+		clientid = request.session["clientid"]
+
 	clidetcur = connection.cursor()
 	clidetcur.execute("select pk_client, client_name from mart.dim_client order by client_name asc;")
 	desc = clidetcur.description

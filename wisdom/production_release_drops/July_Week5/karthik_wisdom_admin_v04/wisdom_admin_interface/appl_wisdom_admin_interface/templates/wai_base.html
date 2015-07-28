@@ -227,7 +227,7 @@
 			
 			$("#ddlheadvenu").on('change',function(e){
 				venid = $('#ddlheadvenu option:selected').val();
-				if((cliid * 1) > 0 )
+				if((venid * 1) > 0 )
 				{
 					var myKeyVals = { venueid: venid, csrfmiddlewaretoken:'{{csrf_token}}'  }
 					$.ajax({
