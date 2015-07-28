@@ -1,0 +1,91 @@
+<div class="align-right padding-right20 padding-bottom10">
+	<a href="javascript:void(0);" onclick="return doupdselall(1);">Select All</a> | <a href="javascript:void(0);" onclick="return doupdselall(2);">Unselect All</a>
+</div>
+
+<table cellpadding="0" cellspacing="0" width="100%" class="table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Module Name</th>
+            <th class="align-center">Read</th>
+            <th class="align-center">Write</th>
+        </tr>
+    </thead>
+    <tbody>
+    	<input type="hidden" id="hidupdusid" name="hidupdusid" value="{{ updusid }}" />
+        {% for up in userperms %}
+        <tr>
+            <td>
+                {% if up.page_name.strip == "wai_mngvalmas" %} 
+                	Validation Master
+				{% elif up.page_name.strip == "wai_mngprojob" %} 
+                    Manage Project / Jobs
+				{% elif up.page_name.strip == "wai_mngprocmoni" %}
+                	Process Monitoring
+				{% elif up.page_name.strip == "wai_mngcliven" %} 
+                	Manage Client / Venue
+				{% elif up.page_name.strip == "wai_mngadmuser" %}
+                	Manage Users
+                {% endif %}
+                <input type="hidden" id="hidupdpermid" name="hidupdpermid" value="{{ up.permission_id }}" />
+                <select id="ddlupdpgna" name="ddlupdpgna" class="form-control hide">
+                    <option value="">-- Select --</option>
+                    {% if up.page_name.strip == "wai_mngvalmas" %}                                                            
+                    <option value="wai_mngvalmas" selected="selected">Validation Master</option>
+                    <option value="wai_mngprojob">Manage Project / Jobs</option>
+                    <option value="wai_mngprocmoni">Process Monitoring</option>
+                    <option value="wai_mngcliven">Manage Client / Venue</option>
+                    <option value="wai_mngadmuser">Manage Users</option>
+                    {% elif up.page_name.strip == "wai_mngprojob" %} 
+                    <option value="wai_mngvalmas">Validation Master</option>
+                    <option value="wai_mngprojob" selected="selected">Manage Project / Jobs</option>
+                    <option value="wai_mngprocmoni">Process Monitoring</option>
+                    <option value="wai_mngcliven">Manage Client / Venue</option>
+                    <option value="wai_mngadmuser">Manage Users</option>
+                    {% elif up.page_name.strip == "wai_mngprocmoni" %} 
+                    <option value="wai_mngvalmas">Validation Master</option>
+                    <option value="wai_mngprojob">Manage Project / Jobs</option>
+                    <option value="wai_mngprocmoni" selected="selected">Process Monitoring</option>
+                    <option value="wai_mngcliven">Manage Client / Venue</option>
+                    <option value="wai_mngadmuser">Manage Users</option>
+                    {% elif up.page_name.strip == "wai_mngcliven" %} 
+                    <option value="wai_mngvalmas">Validation Master</option>
+                    <option value="wai_mngprojob">Manage Project / Jobs</option>
+                    <option value="wai_mngprocmoni">Process Monitoring</option>
+                    <option value="wai_mngcliven" selected="selected">Manage Client / Venue</option>
+                    <option value="wai_mngadmuser">Manage Users</option>
+                    {% elif up.page_name.strip == "wai_mngadmuser" %} 
+                    <option value="wai_mngvalmas">Validation Master</option>
+                    <option value="wai_mngprojob">Manage Project / Jobs</option>
+                    <option value="wai_mngprocmoni">Process Monitoring</option>
+                    <option value="wai_mngcliven">Manage Client / Venue</option>
+                    <option value="wai_mngadmuser" selected="selected">Manage Users</option>
+                    {% else %} 
+                    <option value="wai_mngvalmas">Validation Master</option>
+                    <option value="wai_mngprojob">Manage Project / Jobs</option>
+                    <option value="wai_mngprocmoni">Process Monitoring</option>
+                    <option value="wai_mngcliven">Manage Client / Venue</option>
+                    <option value="wai_mngadmuser">Manage Users</option>
+                    {% endif %}
+                </select>
+            </td>
+            <td class="align-center">
+                {% if up.page_view.strip == "Y" %}
+                <input type="checkbox" id="chkupdview" name="chkupdview" checked="checked" />
+                {% else%}
+                    <input type="checkbox" id="chkupdview" name="chkupdview" />
+                {% endif %}
+                <input type="hidden" id="hidupdview" name="hidupdview" value="up.page_view.strip" />
+            </td>
+            <td class="align-center">
+                {% if up.page_edit.strip == "Y" %}
+                <input type="checkbox" id="chkupdedit" name="chkupdedit" checked="checked" />
+                {% else%}
+                <input type="checkbox" id="chkupdedit" name="chkupdedit" />
+                {% endif %}
+                <input type="hidden" id="hidupdedit" name="hidupdedit" value="up.page_edit.strip" />
+                <input type="hidden" id="hidupddel" name="hidupddel" value="up.page_delete.strip" />
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

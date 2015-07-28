@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}
+	<title>:: Wisdom Admin Interface :: - Header</title>
+{% endblock %}
+{% block script %}
+	<script language='javascript'>
+        function CreateNew()
+        {
+			pid = document.getElementById("ddlproject").value;
+            document.location.href = "/createvalmas/?pid=" + pid;
+        }
+		function doEdit(valid)
+		{
+			/*if((document.getElementById("hidrowopen").value * 1) == 0)
+			{*/
+				document.getElementById("hidrowopen").value = "1";
+				strhidelbl = "#lbldesc" + valid;
+				strhidelbl = strhidelbl + ", #lblassent" + valid;
+				strhidelbl = strhidelbl + ", #lbltherval" + valid;
+				strhidelbl = strhidelbl + ", #lblprioriy" + valid;
+				strhidelbl = strhidelbl + ", #lblactfl" + valid;
+				strhidelbl = strhidelbl + ", #lblvalqry" + valid;
+				//strhidelbl = strhidelbl + ", #editval" + valid;
+				
+				strviewtxt = "#txtsidesc" + valid;
+				strviewtxt = strviewtxt + ", #txtassent" + valid;			
+				strviewtxt = strviewtxt + ", #txttherval" + valid;			
+				strviewtxt = strviewtxt + ", #txtprioriy" + valid;			
+				strviewtxt = strviewtxt + ", #txtactfl" + valid;			
+				strviewtxt = strviewtxt + ", #txtsivalqry" + valid;			
+				//strviewtxt = strviewtxt + ", #updval" + valid;
+				//strviewtxt = strviewtxt + ", #canval" + valid;
+				strviewtxt = strviewtxt + ", #btnCanvalmas";
+				
+				$(strhidelbl).addClass("hide");
+				$(strviewtxt).removeClass("hide");
+			/*}
+			else
+			{
+				alert("Please update or cancel the existing opened record");
+			}*/
+			//$("#lbldesc" + valid, "#editval" + valid).addClass("hide");
+		}
+		function doUpdate(valid)
+		{
+			$('body').append('<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-160"></i></div>');
+			$('body').css("overflow", "hidden");
+			document.frmtablvalmas.submit();
+		}
+		
+		function doCancel(valid)
+		{
+			document.getElementById("hidrowopen").value = "0";
+			strhidelbl = "#lbldesc" + valid;
+			strhidelbl = strhidelbl + ", #lblassent" + valid;
+			strhidelbl = strhidelbl + ", #lbltherval" + valid;
+			strhidelbl = strhidelbl + ", #lblprioriy" + valid;
+			strhidelbl = strhidelbl + ", #lblactfl" + valid;
+			strhidelbl = strhidelbl + ", #lblvalqry" + valid;
+			//strhidelbl = strhidelbl + ", #editval" + valid;
+			
+			strviewtxt = "#txtsidesc" + valid;
+			strviewtxt = strviewtxt + ", #txtassent" + valid;			
+			strviewtxt = strviewtxt + ", #txttherval" + valid;			
+			strviewtxt = strviewtxt + ", #txtprioriy" + valid;			
+			strviewtxt = strviewtxt + ", #txtactfl" + valid;			
+			strviewtxt = strviewtxt + ", #txtsivalqry" + valid;			
+			//strviewtxt = strviewtxt + ", #updval" + valid;
+			//strviewtxt = strviewtxt + ", #canval" + valid;
+			
+			$(strviewtxt).addClass("hide");
+			$(strhidelbl).removeClass("hide");
+		}
+    </script>
+{% endblock %}
+{% block body %}
+	<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-270"></i></div>
+	<div class="br-red">
+    	<div class="container padding-top10">
+        	<h1 class="white">Wisdom Validation Master</h1>
+            <input type="hidden" id="hidheadid" name="hidheadid" value="{{ hid }}" />
+            <input type="hidden" id="hidusname" name="hidusname" value="{{ usna }}" />
+            <input type="hidden" id="hidustype" name="hidustype" value="{{ ustyp }}" />
+            <form id="frmvivalmas" name="frmvivalmas" action="/wai_mngvalmas/" method="post">
+            {% csrf_token %}
+            	<div class="row">
+                	<div class="col-lg-4">
+                    	<div class="input-group">
+                        	<span for="ddlproject" class="input-group-addon">Project Name</span>
+                            <select id="ddlproject" name="ddlproject" class="form-control">
+                            	<option value="">All</option>
+                            	{% for pd in projdet %}
+									{% if projid == pd.project_id %}
+                                <option value="{{ pd.project_id }}" selected="selected" >{{ pd.project_name }} ({{ pd.project_id }})</option>
+                                    {% else %}
+                                <option value="{{ pd.project_id }}" >{{ pd.project_name }} ({{ pd.project_id }})</option>
+                                    {% endif %}
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+                    <div class="col-lg-2">
+                    	<div class="input-group">
+                        	<span for="ddlactive" class="input-group-addon">Active</span>
+                            <select id="ddlactive" name="ddlactive" class="form-control">
+                            	<option value="">All</option>
+                                {% if actsta == "Y" %}
+                                <option value="Y" selected="selected" >Yes</option>
+                                <option value="N">No</option>
+                                {% elif actsta == "N" %}
+                                <option value="Y">Yes</option>
+                                <option value="N" selected="selected">No</option>
+                                {% elif actsta == "" %}
+                                <option value="Y">Yes</option>
+                                <option value="N">No</option>
+                                {% endif %}
+							</select>
+						</div>
+					</div>
+					<div class="col-lg-1"><input type="submit" id="btnsubmit" name="btnsubmit" value="Submit" class="btn btn-info" /></div>
+				    <div class="col-lg-5 align-right"><a href="{{request.get_full_path}}" class="btn btn-danger hide" id="btnCanvalmas">Cancel</a> <a href="javascript:voi(0);" onclick="doUpdate(0)" class="btn btn-primary">Save/Update</a>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="CreateNew()" class="btn btn-success">Create New/Add</a></div>
+                    
+				</div>
+                <div class="padding-15"></div>
+			</form>
+		</div>
+	</div>
+    <div class="">
+    	<div class="container">
+        	<div class="row">
+            	<div class="col-lg-12">
+                	<div class="padding-10"></div>
+                    <form id="frmeditvalmas" name="frmeditvalmas" method="post" action="/wai_header/">
+                    	{% csrf_token %}
+                        <input type="hidden" id="hidrowopen" name="hidrowopen" />
+                    	<input type="hidden" id="txtmasid" name="txtmasid" />
+                        <input type="hidden" id="hidprojid" name="hidprojid" />
+                        <input type="hidden" id="txtdesc" name="txtdesc"  />
+                        <input type="hidden" id="txtassoenty" name="txtassoenty" />
+                        <input type="hidden" id="txtthersval" name="txtthersval" />
+                        <input type="hidden" id="txtpriority" name="txtpriority" />
+                        <input type="hidden" id="txtactflag" name="txtactflag" />
+                        <input type="hidden" id="txtvalqry" name="txtvalqry" />
+                    </form>
+                    <form id="frmtablvalmas" name="frmtablvalmas" method="post" action="/wai_header/">
+                    {% csrf_token %}
+                    <table cellpadding="2" cellspacing="0" id="tblvalmasdet" width="100%" class="table table-striped table-bordered table-hover">
+                    	<thead>
+                        	<tr>
+                            	{% if projid == "" %}
+                                <th style="width:150px;" class="align-center">Project Name</th>
+                                <th style="width:80px;" class="align-center">Project ID</th>
+                                {% endif %}
+                                <th style="width:95px;" class="align-center">Validation ID</th>
+                                <th style="width:170px;" class="align-center">Description</th>
+                                <th style="width:120px;" class="align-center">Object</th>
+                                <th style="width:75px;" class="align-center">Threshold</th>
+                                <!--<th align="center">Status</th> -->
+                                <th style="width:60px;" class="align-center">Priority</th>
+                                <th style="width:50px;" class="align-center">Active</th>
+                                <th style="width:200px;" class="align-center">Query</th>
+                                <!--<th align="center" class="align-center">Created On</th>
+                                <th >Updated On</th> -->
+                                <!--th style="width:50px;"></th-->
+							</tr>
+						</thead>
+                        <tbody>
+                        	{% for vm in valmasdet %}
+                            <tr>
+                            	{% if projid == "" %}
+                                <td style="max-width:150px;" class="align-left">{{ vm.project_name }} </td>
+                                <td style="max-width:80px;" class="align-left">{{ vm.project_id }} </td>
+							    {% endif %}
+                                <td style="max-width:95px;" class="align-left">
+                                	{{ vm.id }} 
+                                    <input type="hidden" id="hidvalid{{ vm.id }}" name="hidvalid" value="{{ vm.id }}" />
+                                    <input type="hidden" id="hidsiprojid{{ vm.id }}" name="hidsiprojid" value="{{ vm.project_id }}" />
+								</td>
+                                <td style="max-width:170px;" class="wrapword align-left" onclick="doEdit('{{ vm.id }}')">
+                                	<span id="lbldesc{{ vm.id }}"><span data-toggle="tooltip" data-placement="left" data-html="true" title="{{ vm.description }}">{{ vm.description|slice:"0:50" }}</span></span>
+                                    <textarea rows="4" id="txtsidesc{{ vm.id }}" name="txtsidesc" class="hide form-control" style="resize: none" maxlength="50">{{ vm.description }}</textarea>
+								</td>
+                                <td style="max-width:120px;" class="wrapword align-left" onclick="doEdit('{{ vm.id }}')">
+                                	<span id="lblassent{{ vm.id }}">{{ vm.associated_entity }}</span>
+                                    <input type="text" id="txtassent{{ vm.id }}" name="txtassent" value="{{ vm.associated_entity }}" class="hide form-control" maxlength="50" />
+								</td>
+                                <td style="max-width:75px;" class="align-left" onclick="doEdit('{{ vm.id }}')">
+                                	<span id="lbltherval{{ vm.id }}">{{ vm.threshold_value }}</span>
+                                    <input type="text" id="txttherval{{ vm.id }}" name="txttherval" value="{{ vm.threshold_value }}" class="hide form-control" maxlength="5" />
+								</td>
+                                <!--<td align='left' >{{ vm.status }}</td> -->
+                                <td style="max-width:60px;" class="align-left" onclick="doEdit('{{ vm.id }}')">
+                                	<span id="lblprioriy{{ vm.id }}">{{ vm.priority }}</span>
+                                    <input type="text" id="txtprioriy{{ vm.id }}" name="txtprioriy" value="{{ vm.priority }}" class="hide form-control" maxlength="5" />
+								</td>
+                                <td style="max-width:50px;" class="align-left" onclick="doEdit('{{ vm.id }}')">
+                                	<span id="lblactfl{{ vm.id }}">{{ vm.active_flag }}</span>
+                                    <input type="text" id="txtactfl{{ vm.id }}" name="txtactfl" value="{{ vm.active_flag }}" class="hide form-control" maxlength="10" />
+								</td>
+                                <td style="max-width:200px;" class="wrapword align-left" onclick="doEdit('{{ vm.id }}')">
+                                	<span id="lblvalqry{{ vm.id }}"><span data-toggle="popover" data-placement="left" data-html="true" title="Query" data-content= "{{ vm.validation_query }}">{{ vm.validation_query|slice:"0:50" }}</span></span>
+                                    <textarea rows="4" id="txtsivalqry{{ vm.id }}" name="txtsivalqry" class="hide form-control" style="resize: none" maxlength="4000">{{ vm.validation_query }}</textarea>
+								</td>
+                                <!--<td align='left'>{{ vm.created_on }}</td>
+                                <td align='left'>{{ vm.updated_on }}</td> -->
+                                <!--td style="width:50px;" class="align-center">
+                                	<a href='/viewdat/?mid={{ vm.id }}' class="btn btn-link hide">Edit</a>
+                                    <a href='javascript:void(0);' onclick="doEdit('{{ vm.id }}');" id="editval{{ vm.id }}" class="btn btn-link hide" >Edit</a>
+                                    <a href='javascript:void(0);' class="btn btn-link hide" onclick="doUpdate('{{ vm.id }}');"  id="updval{{ vm.id }}">Update</a>
+                                    <a href='javascript:void(0);' class="btn btn-link hide" onclick="doCancel('{{ vm.id }}');"  id="canval{{ vm.id }}"><img src="{% static "images/close.png" %}" class="img-responsive" alt="Cancel"></a>
+								</td-->
+							</tr>                            
+                            {% endfor %}
+						</tbody>
+					</table>
+                    <div class="padding-10"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+    <script language='javascript'>
+		document.getElementById("ddlproject").value = "{{ projid }}";
+		
+		{% if projid == "" %}
+		$(document).ready(function() {		
+			$('#tblvalmasdet').dataTable(
+				{
+					"lengthMenu": [[50, 100, 150, 200, -1], [50, 100, 150, 200, "All"]],
+					"order": [[ 2, "desc" ]]
+				}
+			);
+		});
+		{% else %}
+		$(document).ready(function() {		
+			$('#tblvalmasdet').dataTable(
+				{
+					"lengthMenu": [[50, 100, 150, 200, -1], [50, 100, 150, 200, "All"]],
+					"order": [[ 0, "desc" ]]
+				}
+			);
+		});
+		{% endif %}
+	</script>
+{% endblock %}

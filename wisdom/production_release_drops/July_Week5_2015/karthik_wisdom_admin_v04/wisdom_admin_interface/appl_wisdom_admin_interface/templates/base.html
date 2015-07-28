@@ -1,0 +1,198 @@
+{% block content %}
+{% load staticfiles %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        {% block title %}
+		{% endblock %}
+        <link href="{% static "css/bootstrap.css" %}" rel="stylesheet" />
+        <link href="{% static "css/style.css" %}" rel="stylesheet" />
+        <link href="{% static "css/dashboard.css" %}" rel="stylesheet" />
+		<link href="{% static "css/font-awesome.min.css" %}" rel="stylesheet" />
+		<link href="{% static "css/bootstrap-datetimepicker.min.css" %}" rel="stylesheet" />
+    	<link rel="stylesheet" type="text/css" href="{% static "css/jquery.dataTables.css" %}">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script src="{% static "js/bootstrap.js" %}"></script>
+		<script src="{% static "js/jquery.dataTables.js" %}"></script>
+		<script src="{% static "js/moment.js" %}"></script>
+		<script src="{% static "js/bootstrap-datetimepicker.min.js" %}"></script>
+		<script src="{% static "js/common.js" %}"></script>        
+        <script language='javascript'>
+			$(function () {
+				$('[data-toggle="tooltip"]').tooltip();
+				$('[data-toggle="popover"]').popover();
+				var $currentPopover = null;
+				  $(document).on('shown.bs.popover', function (ev) {
+					var $target = $(ev.target);
+					if ($currentPopover && ($currentPopover.get(0) != $target.get(0))) {
+					  $currentPopover.popover('toggle');
+					}
+					$currentPopover = $target;
+				  });
+				
+				  $(document).on('hidden.bs.popover', function (ev) {
+					var $target = $(ev.target);
+					if ($currentPopover && ($currentPopover.get(0) == $target.get(0))) {
+					  $currentPopover = null;
+					}
+				  });
+			})
+		</script>
+		{% block script %}
+		{% endblock %}
+	</head>
+	<body>
+    	<nav class="navbar navbar-default navbar-fixed-top">
+          <div class="container-fluid">
+          	<div class="row no-margin padding-top10">
+            	<div class="col-lg-8"></div>
+                <div class="col-lg-2 align-left no-padding-left">
+                	<div class="row">
+                        <label for="ddlheadclie" class="col-lg-4 padding-top10 align-right">Client:</label>
+                        <div class="col-lg-8 no-padding-left">
+                            <select id="ddlheadclie" name="ddlheadclie" class="form-control">
+                                <option value="1">49ers</option>
+                            </select>
+                        </div>
+                    </div>
+				</div>
+                <div class="col-lg-2 align-right no-padding-right">
+                	<div class="row">
+                        <label for="ddlheadvenu" class="col-lg-4 padding-top10 align-right">Venue:</label>
+                        <div class="col-lg-8 no-padding-left">
+                            <select id="ddlheadvenu" name="ddlheadvenu" class="form-control">
+                                <option value="1">Levis</option>
+                            </select>
+                        </div>
+                    </div>
+				</div>
+            </div>
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand no-padding" href="#"><img src="{% static "images/vnlogo.jpg" %}" class="img-responsive" style="height: 50px" alt="VenueNext"></a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+              <ul class="nav navbar-nav navbar-right">
+                	<li>
+                        <a href="../wai_mngvalmas/" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Wisdom Meta Data Management<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li id="livalmas"><a href="../wai_mngvalmas/">Manage Validation</a></li>
+                            <li id="liprojob"><a href="../wai_mngprojob/">Manage Project / Jobs</a></li>
+                            <li id="licliven"><a href="../wai_mngcliven/">Manage Client / Venue</a></li>
+                            <li id="liadmusr"><a href="../wai_mngadmuser/">Manage User</a></li>
+                        </ul>
+                    </li>
+                    <li id="liprocmon"><a href="../wai_mngprocmoni/">Wisdom Process Monitoring</a></li>
+                    <li id="licliven"><a href="#">Configuration Management</a></li>
+                    <li id="liadmusr"><a href="#">Splunk Activity</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span id="spnusna"></span><span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li id="lichgpwd"><a href="/wai_chgpwd/">Change Password</a></li>
+                            <li><a href="/wai_logout/">Logout</a></li>
+                        </ul>
+                    </li>
+              	</ul>
+            </div>
+          </div>
+        </nav>
+    	
+		<!--<div class="main">
+    		<div class="padding-top5 padding-bottom5">
+            	<div class="row">
+                	<div class="col-lg-3"><img src="{% static "images/vnlogo.jpg" %}" class="img-responsive" alt="VenueNext"></div>
+                    <div class="col-lg-9">
+                    	<ul class="nav nav-pills pull-right margin-top20">
+                        	<li class="dropdown">
+                                <a href="../wai_mngvalmas/" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Wisdom Meta Data Management</a>
+                                <ul class="dropdown-menu" role="menu">
+                                	<li id="livalmas"><a href="../wai_mngvalmas/">Manage Validation</a></li>
+                                    <li id="liprojob"><a href="../wai_mngprojob/">Manage Project / Jobs</a></li>
+                                    <li id="licliven"><a href="../wai_mngcliven/">Manage Client / Venue</a></li>
+                                    <li id="liadmusr"><a href="../wai_mngadmuser/">Manage User</a></li>
+                                </ul>
+                            </li>
+                            <li id="liprocmon"><a href="../wai_mngprocmoni/">Wisdom Process Monitoring</a></li>
+                            <li id="licliven"><a href="#">Configuration Management</a></li>
+                            <li id="liadmusr"><a href="#">Splunk Activity</a></li>
+            				<li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span id="spnusna"></span><span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                	<li id="lichgpwd"><a href="/wai_chgpwd/">Change Password</a></li>
+                                	<li><a href="/wai_logout/">Logout</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>-->
+            {% block body %}
+            {% endblock %}
+    	<!--</div>-->
+        <!--div class="footer padding-20 text-center">
+            	VENUENEXT IS BASED IN SAN FRANCISCO, SILICON VALLEY AND NEW YORK.
+        </div-->
+         <script language='javascript'>
+			var headid = document.getElementById("hidheadid").value;
+			document.getElementById("spnusna").innerHTML = document.getElementById("hidusname").value;
+			$("#livalmas, #liprojob, #liprocmon, #licliven, #liadmusr, #lichgpwd").removeClass("active");
+			
+			if((headid * 1) == "1")
+				$("#livalmas").addClass("active");
+			else if((headid * 1) == "2")
+				$("#liprojob").addClass("active");
+			else if((headid * 1) == "3")
+				$("#liprocmon").addClass("active");
+			else if((headid * 1) == "4")
+				$("#licliven").addClass("active");
+			else if((headid * 1) == "5")
+				$("#liadmusr").addClass("active");
+			else if((headid * 1) == "6")
+				$("#lichgpwd").addClass("active");
+			else
+				$("#livalmas").addClass("active");
+				
+			if(trimAllSpace(document.getElementById("hidustype").value) == "SA")
+			{
+				$("#livalmas, #liprojob, #liprocmon, #licliven, #liadmusr").removeClass("hide");
+			}
+			else if(trimAllSpace(document.getElementById("hidustype").value) == "A" || trimAllSpace(document.getElementById("hidustype").value) == "U")
+			{
+				$("#livalmas, #liprojob, #liprocmon, #licliven, #liadmusr").addClass("hide");
+				arrObjHidPgNa = document.getElementsByName("hidpgnames");
+				arrObjHidPgVi = document.getElementsByName("hidpgviews");
+				arrObjHidPgEd = document.getElementsByName("hidpgedits");
+				arrObjHidPgDe = document.getElementsByName("hidpgdeles");
+				
+				for(i = 0; i < arrObjHidPgNa.length; i++)
+				{
+					if(trimAllSpace(arrObjHidPgVi[i].value) == "Y")
+					{
+						if(trimAllSpace(arrObjHidPgNa[i].value.toLowerCase()) == "wai_mngvalmas")
+							$("#livalmas").removeClass("hide");
+						if(trimAllSpace(arrObjHidPgNa[i].value.toLowerCase()) == "wai_mngprojob")
+							$("#liprojob").removeClass("hide");
+						if(trimAllSpace(arrObjHidPgNa[i].value.toLowerCase()) == "wai_mngprocmoni")
+							$("#liprocmon").removeClass("hide");
+						if(trimAllSpace(arrObjHidPgNa[i].value.toLowerCase()) == "wai_mngcliven")
+							$("#licliven").removeClass("hide");
+						if(trimAllSpace(arrObjHidPgNa[i].value.toLowerCase()) == "wai_mngadmuser")
+							$("#liadmusr").removeClass("hide");
+					}
+				}
+			}
+			
+			setTimeout(function() {
+				$('body').find('.message-loading-overlay').remove();
+				$('body').removeClass("no-scroll");
+			}, 500 + parseInt(Math.random() * 500));
+		</script>
+	</body>
+</html>
+{% endblock %}

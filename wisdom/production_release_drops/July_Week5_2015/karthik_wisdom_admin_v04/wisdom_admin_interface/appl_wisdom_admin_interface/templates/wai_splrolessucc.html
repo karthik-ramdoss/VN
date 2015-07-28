@@ -1,0 +1,71 @@
+{% extends "wai_base.html" %}
+{% load staticfiles %}
+{% block title %}
+	<title>:: Wisdom Admin Interface :: - Validation Master</title>
+{% endblock %}
+{% block script %}
+<script>
+	function doSubsplcrtrole(){
+		if($("#client_name").val() == ""){
+			alert("Please enter the client name.");
+			$("#client_name").val('').focus();
+			return false;
+		}
+		if($("#venue_name").val() == ""){
+			alert("Please enter the venue name.");
+			$("#venue_name").val('').focus();
+			return false;
+		}
+		if($("#imported_roles").val() == ""){
+			alert("Please enter the imported roles.");
+			$("#imported_roles").val('').focus();
+			return false;
+		}
+		return true;
+	}
+</script>
+{% endblock %}
+{% block ddlclient %}
+	<select id="ddlheadclie" name="ddlheadclie" class="form-control">    
+	{% for cd in clidet %}
+	   	<option value="{{ cd.pk_client }}">{{ cd.client_name }}</option>
+	{% endfor %}
+    </select>
+{% endblock %}
+{% block ddlvenue %}
+	<select id="ddlheadvenu" name="ddlheadvenu" class="form-control">    
+	{% for vn in vendet %}
+	   	<option value="{{ vn.pk_venue }}">{{ vn.venue_name }}</option>
+	{% endfor %}
+    </select>
+{% endblock %}
+{% block body %}
+<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-270"></i></div>   
+<div class="container-fluid">
+	<div class="row">
+    	<div class="col-sm-3 col-md-2 sidebar">
+        	<ul class="nav nav-sidebar">
+           		<li id="lisplusr"><a href="../wai_mngsplcrtusr/">Create Splunk Users</a></li>
+                <li id="lisplrol"><a href="../wai_mngsplcrtrol/">Create Splunk Roles</a></li>
+			</ul>
+		</div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 padding-bottom20">
+        	<h1 class="page-header">Splunk Role Success / Failure<small class='pull-right'><a href="/wai_mngsplcrtrol/" class="btn btn-primary hide" id="btnBaSplRole" name="btnBaSplRole">Back</a></small></h1>
+            <input type="hidden" id="hidheadid" name="hidheadid" value="{{ hid }}" />
+            <input type="hidden" id="hidusname" name="hidusname" value="{{ usna }}" />
+            <input type="hidden" id="hidustype" name="hidustype" value="{{ ustyp }}" />
+            {% for pg in pgdet %}
+                <input type="hidden" id="hidpgnames" name="hidpgnames" value="{{ pg.page_name }}" />
+                <input type="hidden" id="hidpgviews" name="hidpgviews" value="{{ pg.page_view }}" />
+                <input type="hidden" id="hidpgedits" name="hidpgedits" value="{{ pg.page_edit }}" />
+                <input type="hidden" id="hidpgdeles" name="hidpgdeles" value="{{ pg.page_delete }}" />
+            {% endfor %}
+            <div class="align-center">
+            	 <h3>{{ result }}</h3>
+                <a href="/wai_mngsplcrtrol/" class="btn btn-primary" id="btnBaSplRole" name="btnBaSplRole">Back</a>
+            </div>
+            <div class="padding-10"></div>
+		</div>
+	</div>
+</div>
+{% endblock %}

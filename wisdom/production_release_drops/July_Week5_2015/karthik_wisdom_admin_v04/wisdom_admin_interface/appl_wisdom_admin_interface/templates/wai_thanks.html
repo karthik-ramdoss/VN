@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}
+	<title>:: Wisdom Admin Interface :: - Success</title>
+{% endblock %}
+{% block body %}
+<div class="br-red">
+    <div class="container padding-top10 padding-bottom20">
+        <h1 class="white">Wisdom Validation Master</h1>
+    </div>
+</div>
+<div class="">
+    <div class="container padding-bottom20">
+        <div class="row">
+            <div class="col-lg-12 align-center">
+                <div class="padding-10"></div>
+				<input type="hidden" id="hidheadid" name="hidheadid" value="{{ hid }}" />
+                <input type="hidden" id="hidusname" name="hidusname" value="{{ usna }}" />
+                <input type="hidden" id="hidustype" name="hidustype" value="{{ ustyp }}" />
+                {% for pg in pgdet %}
+                	<input type="hidden" id="hidpgnames" name="hidpgnames" value="{{ pg.page_name }}" />
+	            	<input type="hidden" id="hidpgviews" name="hidpgviews" value="{{ pg.page_view }}" />
+                	<input type="hidden" id="hidpgedits" name="hidpgedits" value="{{ pg.page_edit }}" />
+                    <input type="hidden" id="hidpgdeles" name="hidpgdeles" value="{{ pg.page_delete }}" />
+                {% endfor %}
+                <label><h2>{{ succmsg }}</h2></label><br /><br />
+                <input type='button' value='Ok' class="btn btn-primary" id='btngotohome' name='btngotohome' onClick="return doAddClick();" />                           
+            </div>
+        </div>
+    </div>
+</div>
+<script language='javascript'>
+	function doAddClick()
+	{
+		document.location.href = "../wai_mngvalmas";
+	}
+</script>
+{% endblock %}

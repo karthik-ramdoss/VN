@@ -1,0 +1,116 @@
+{% extends "wai_base.html" %}
+{% load staticfiles %}
+{% block title %}
+	<title>:: Wisdom Admin Interface :: - Change Password</title>
+{% endblock %}
+{% block script %}
+	<script language="javascript">
+		function doChngPwd()
+		{
+			if(trimAllSpace(document.getElementById("txtoldpwd").value) == "")
+			{
+				alert("Please enter the old password");
+				document.getElementById("txtoldpwd").focus();
+				return false;
+			}
+			if(document.getElementById("txtoldpwd").value == document.getElementById("hidoldpwd").value == "")
+			{
+					alert("Your old password is not correct.");
+					document.getElementById("txtoldpwd").focus();
+					return false;
+			}
+			if(trimAllSpace(document.getElementById("txtnewpwd").value) == "")
+			{
+				alert("Please enter the new password");
+				document.getElementById("txtnewpwd").focus();
+				return false;
+			}
+			if(document.getElementById("txtnewpwd").value.length < 6)
+			{
+				alert("Password should be minimum 6 character");
+				document.getElementById("txtnewpwd").focus();
+				return false;
+			}
+			if(trimAllSpace(document.getElementById("txtcnfpwd").value) == "")
+			{
+					alert("Please enter the confirm password");
+					document.getElementById("txtcnfpwd").focus();
+					return false;
+			}
+			if(document.getElementById("txtnewpwd").value == document.getElementById("txtcnfpwd").value == "")
+			{
+					alert("New password and confirm password should be same");
+					document.getElementById("txtcnfpwd").focus();
+					return false;
+			}
+			return true;
+		}
+	</script>
+{% endblock %}
+{% block ddlclient %}
+	<select id="ddlheadclie" name="ddlheadclie" class="form-control">    
+	{% for cd in clidet %}
+	   	<option value="{{ cd.pk_client }}">{{ cd.client_name }}</option>
+	{% endfor %}
+    </select>
+{% endblock %}
+{% block ddlvenue %}
+	<select id="ddlheadvenu" name="ddlheadvenu" class="form-control">    
+	{% for vn in vendet %}
+	   	<option value="{{ vn.pk_venue }}">{{ vn.venue_name }}</option>
+	{% endfor %}
+    </select>
+{% endblock %}
+{% block body %}
+	<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-270"></i></div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul class="nav nav-sidebar">
+                    <li id="lischgpwd"><a href="/wai_chgpwd/">Change Password</a></li>
+                </ul>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 padding-bottom20">
+                <h1 class="page-header">Change Password</h1>
+                <input type="hidden" id="hidheadid" name="hidheadid" value="{{ hid }}" />
+	            <input type="hidden" id="hidusname" name="hidusname" value="{{ usna }}" />
+                <input type="hidden" id="hidustype" name="hidustype" value="{{ ustyp }}" />
+                <!-- page_name, page_view, page_edit, page_delete -->
+                {% for pg in pgdet %}
+                	<input type="hidden" id="hidpgnames" name="hidpgnames" value="{{ pg.page_name }}" />
+	            	<input type="hidden" id="hidpgviews" name="hidpgviews" value="{{ pg.page_view }}" />
+                	<input type="hidden" id="hidpgedits" name="hidpgedits" value="{{ pg.page_edit }}" />
+                    <input type="hidden" id="hidpgdeles" name="hidpgdeles" value="{{ pg.page_delete }}" />
+                {% endfor %}
+                <div class="row">
+                	<div class="col-lg-4"></div>
+                    <div class="col-lg-4">
+                    	<form id="frmchngpwd" name="frmchngpwd" action="/wai_chgpwd/" method="post" onsubmit="return doChngPwd();">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label class="red"> {{ errmsg }} </label>
+                            </div>
+                            <div class="form-group">
+                                <label></label>
+                                <input type="hidden" id="hidoldpwd" name="hidoldpwd" value="{{ op }}" />
+                                <input type="password" id="txtoldpwd" name="txtoldpwd" value="" placeholder="Enter Old Password" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label></label>
+                                <input type="password" id="txtnewpwd" name="txtnewpwd" value="" placeholder="Enter New Password" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label></label>
+                                <input type="password" id="txtcnfpwd" name="txtcnfpwd" value="" placeholder="Confirm New Password" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <input type="reset" value="Cancel" id="btncanc" name="btncanc" class="btn btn-default" />&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="Save" id="btnsignin" name="btnsignin" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-lg-4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,545 @@
+{% extends "wai_base.html" %}
+{% block title %}
+	<title>:: Wisdom Admin Interface :: - Project & Jobs</title>
+{% endblock %}
+{% block script %}
+<script>
+	var JobFields = "jobname,jobdesc,frequ,cate,active,highfreq,jobemthre,emacount,incstdt,inceddt";
+	function doEdit(jobid){
+		ArrFields = JobFields.split(",");
+		for(i=0;i<ArrFields.length;i++)
+		{
+			lblJob = "#lbl"+ArrFields[i]+jobid;
+			TxtJob = "#txt"+ArrFields[i]+jobid;
+			$(lblJob).addClass("hide");
+			$(TxtJob).removeClass("hide");
+		}
+		$("#CreJob").addClass("hide");
+		$("#UptJob,#CanJob").removeClass("hide");
+	}
+	
+	function doUpdateJobs()
+	{
+		arrjobname = document.getElementsByName("txtjobname");
+		arrjobdesc = document.getElementsByName("txtjobdesc");
+		arrfrequ = document.getElementsByName("txtfrequ");
+		arrcate = document.getElementsByName("txtcate");
+		arractive = document.getElementsByName("txtactive");
+		arrhighfreq = document.getElementsByName("txthighfreq");
+		arrjobemthre = document.getElementsByName("txtjobemthre");
+		arremacount = document.getElementsByName("txtemacount");
+		arrincstdt = document.getElementsByName("txtincstdt");
+		arrinceddt = document.getElementsByName("txtinceddt");
+		
+		for(arj=0; arj<arrjobname.length;arj++)
+		{
+			if(trimAllSpace(arrjobname[arj].value) == "")
+			{
+				alert("Please enter the job name.");
+				$("#"+arrjobname[arj].id).focus();
+				return false;
+			}
+			if(trimAllSpace(arrjobdesc[arj].value) == "")
+			{
+				alert("Please enter the job description.");
+				$("#"+arrjobdesc[arj].id).focus();
+				return false;
+			}
+			if(trimAllSpace(arrfrequ[arj].value) == "")
+			{
+				alert("Please enter the job frequency.");
+				$("#"+arrfrequ[arj].id).focus();
+				return false;
+			}
+			if(trimAllSpace(arrcate[arj].value) == "")
+			{
+				alert("Please enter the job category.");
+				$("#"+arrcate[arj].id).focus();
+				return false;
+			}
+			if(trimAllSpace(arractive[arj].value) == "")
+			{
+				alert("Please enter job active status");
+				$("#"+arractive[arj].id).focus();
+				return false;
+			}
+			if(trimAllSpace(arrhighfreq[arj].value) == "")
+			{
+				alert("Is high frequency this job("+ arrjobname[arj].value +")")
+				$("#"+arrhighfreq[arj].id).focus();
+				return false;
+			}
+			if(trimAllSpace(arrjobemthre[arj].value) == "")
+			{
+				alert("Please enter success mail threshold.");
+				$("#"+arrjobemthre[arj].id).focus();
+				return false;
+			}
+			if(trimAllSpace(arremacount[arj].value) == "")
+			{
+				alert("Please enter the success mail couter");
+				$("#"+arremacount[arj].id).focus();
+				return false;
+			}
+			if(trimAllSpace(arrincstdt[arj].value) == "")
+			{
+				alert("Please enter the incremental baseline start date.");
+				$("#"+arrincstdt[arj].id).focus();
+				return false;
+			}
+			/*if(trimAllSpace(arrjobname[arj].value) == "")
+			{
+				alert("Please enter the incremental baseline end date.")
+				$("#"+arrinceddt[arj].id).focus();
+				return false;
+			}*/
+		}		$('body').append('<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-270"></i></div>');
+		$('body').css("overflow", "hidden");
+		document.frmjobdet.submit();
+	}
+	
+	function doCreNewJob()
+	{
+		if(trimAllSpace(document.getElementById("txtcrtjobid").value) == "")
+		{
+			alert("Please enter the job id.");
+			document.getElementById("txtcrtjobid").focus();
+			return false;
+		}
+		if(trimAllSpace(document.getElementById("txtcrtjobname").value) == "")
+		{
+			alert("Plaese enter the job name.");
+			document.getElementById("txtcrtjobname").focus();
+			return false;
+		}
+		if(trimAllSpace(document.getElementById("txtcrtjobdesc").value) == "")
+		{
+			alert("Please enter the job description.");
+			document.getElementById("txtcrtjobdesc").focus();
+			return false;
+		}
+		if(trimAllSpace(document.getElementById("txtcrtjobfreq").value) == "")
+		{
+			alert("Please enter the job frequency.");
+			document.getElementById("txtcrtjobfreq").focus();
+			return false;
+		}
+		if(trimAllSpace(document.getElementById("txtcrtjobcat").value) == "")
+		{
+			alert("Please enter the job category.");
+			document.getElementById("txtcrtjobcat").focus();
+			return false;
+		}
+		if(trimAllSpace(document.getElementById("ddlcrtjobact").value) == "")
+		{
+			alert("Please select the job active status.");
+			document.getElementById("ddlcrtjobact").focus();
+			return false;
+		}
+		if(trimAllSpace(document.getElementById("txtcrtjobinstdate").value) == "")
+		{
+			alert("Please select incremental baseline start date.");
+			document.getElementById("txtcrtjobinstdate").focus();
+			return false;
+		}
+		if(trimAllSpace(document.getElementById("txtcrtjobineddate").value) == "")
+		{
+			alert("Please select incremental baseline end date.");
+			document.getElementById("txtcrtjobineddate").focus();
+			return false;
+		}
+		$('body').append('<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-270"></i></div>');
+		$('body').css("overflow", "hidden");
+		document.frmcrtnewjob.submit();
+	}
+	
+	function doChkJobIDNaExt(intChoose)
+	{
+		if((intChoose * 1) == 1)
+		{
+			if(trimAllSpace(document.getElementById("txtcrtjobid").value) != "")
+			{
+				$('.modal-body').append('<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-160"></i></div>');
+				var myKeyVals = { jobid: document.getElementById("txtcrtjobid").value, csrfmiddlewaretoken:'{{csrf_token}}'  }
+				$.ajax({
+					url : "/wai_extjobidna/", 
+					type : "POST",
+					data : myKeyVals,
+					success : function(data) {
+						setTimeout(function() {
+							$('.modal-body').find('.message-loading-overlay').remove();
+							if((data * 1) > 0){
+								alert("Job ID already exist.");
+								$("#txtcrtjobid").val('').focus();
+							}
+							else
+								$("#txtcrtjobname").focus();
+						}, 500 + parseInt(Math.random() * 500));
+					},
+					error : function(xhr,errmsg,err) {
+						$('.modal-body').find('.message-loading-overlay').remove();
+						alert(xhr.status + ": " + xhr.responseText);
+					}
+				});
+			}
+		}
+		else if((intChoose * 1) == 2)
+		{
+			if(trimAllSpace(document.getElementById("txtcrtjobname").value) != "")
+			{
+				//document.getElementById("txtcrtjobname").value = document.getElementById("txtcrtjobname").value.toLowerCase();
+				$('.modal-body').append('<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-160"></i></div>');
+				var myKeyVals = { jobname: document.getElementById("txtcrtjobname").value, csrfmiddlewaretoken:'{{csrf_token}}'  }
+				$.ajax({
+					url : "/wai_extjobidna/", 
+					type : "POST",
+					data : myKeyVals,
+					success : function(data) {
+						setTimeout(function() {
+							$('.modal-body').find('.message-loading-overlay').remove();
+							if((data * 1) > 0){
+								alert("Job name already exist.");
+								$("#txtcrtjobname").val('').focus();
+							}
+							else
+								$("#txtcrtjobdesc").focus();
+						}, 500 + parseInt(Math.random() * 500));
+						return false;
+					},
+					error : function(xhr,errmsg,err) {
+						$('.modal-body').find('.message-loading-overlay').remove();
+						alert(xhr.status + ": " + xhr.responseText);
+					}
+				});
+			}
+		}
+	}
+	
+	function UpdChkJobNaExists(jbid)
+	{
+		//txtjobname{{ jd.job_id }}
+		objTxtJobNa = "txtjobname" + jbid;
+		if(trimAllSpace(document.getElementById(objTxtJobNa).value) != "")
+		{
+			objTxtJobDesc = "txtjobdesc" + jbid;
+			//document.getElementById(objTxtJobNa).value = document.getElementById(objTxtJobNa).value.toUpperCase();
+			$('body').append('<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-160"></i></div>');
+			var myKeyVals = { jobid: jbid, jobname: document.getElementById(objTxtJobNa).value, csrfmiddlewaretoken:'{{csrf_token}}'  }
+			$.ajax({
+				url : "/wai_updextjobidna/", 
+				type : "POST",
+				data : myKeyVals,
+				success : function(data) {
+					setTimeout(function() {
+						$('body').find('.message-loading-overlay').remove();
+						if((data * 1) > 0){
+							alert("Job name already exist.");							
+							$("#" + objTxtJobNa).val('').focus();
+						}
+						else
+							$("#" + objTxtJobDesc).focus();
+					}, 500 + parseInt(Math.random() * 500));
+					return false;
+				},
+				error : function(xhr,errmsg,err) {
+					$('body').find('.message-loading-overlay').remove();
+					alert(xhr.status + ": " + xhr.responseText);
+				}
+			});
+		}
+	}
+	
+</script>
+{% endblock %}
+{% block ddlclient %}
+	<select id="ddlheadclie" name="ddlheadclie" class="form-control">    
+	{% for cd in clidet %}
+	   	<option value="{{ cd.pk_client }}">{{ cd.client_name }}</option>
+	{% endfor %}
+    </select>
+{% endblock %}
+{% block ddlvenue %}
+	<select id="ddlheadvenu" name="ddlheadvenu" class="form-control">    
+	{% for vn in vendet %}
+	   	<option value="{{ vn.pk_venue }}">{{ vn.venue_name }}</option>
+	{% endfor %}
+    </select>
+{% endblock %}
+{% block body %}
+<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-270"></i></div>
+
+<div class="container-fluid">
+	<div class="row">
+    	<div class="col-sm-3 col-md-2 sidebar">
+        	<ul class="nav nav-sidebar">
+           		<li id="livalmas"><a href="../wai_mngvalmas/">Manage Data Validation</a></li>
+                <li id="liprojob"><a href="../wai_mngprojob/">Manage Projects & Jobs</a></li>
+                <li id="licliven"><a href="../wai_mngcliven/">Manage Clients & Venues</a></li>
+                <li id="liadmusr"><a href="../wai_mngadmuser/">Manage Users & Roles</a></li>
+			</ul>
+		</div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 padding-bottom20">
+        	<h1 class="page-header">
+            	Project
+                <small class='pull-right'>
+                	<a href="/wai_mngprojob/" class="btn btn-default">Back to all Projects</a>
+                </small>
+			</h1>
+        	<input type="hidden" id="hidheadid" name="hidheadid" value="{{ hid }}" />
+            <input type="hidden" id="hidusname" name="hidusname" value="{{ usna }}" />
+            <input type="hidden" id="hidustype" name="hidustype" value="{{ ustyp }}" />
+            {% for pg in pgdet %}
+                <input type="hidden" id="hidpgnames" name="hidpgnames" value="{{ pg.page_name }}" />
+                <input type="hidden" id="hidpgviews" name="hidpgviews" value="{{ pg.page_view }}" />
+                <input type="hidden" id="hidpgedits" name="hidpgedits" value="{{ pg.page_edit }}" />
+                <input type="hidden" id="hidpgdeles" name="hidpgdeles" value="{{ pg.page_delete }}" />
+            {% endfor %}
+            <table cellpadding="2" cellspacing="0" width="100%" class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th style="width:80px;" class="align-center">Project ID</th>
+                        <th style="width:150px;" class="align-center">Project Name</th>
+                        <th class="align-center">No. of Jobs</th>
+                        <th style="width:100px;" class="align-center">Scheduled Start Time (UTC)</th>
+                            <th style="width:150px;" class="align-center">Schedule Start Time (Venue Timezone)</th>
+                        <th style="width:180px;" class="align-center">Last Run At</th>
+                        <th class="align-center">Last Run Duration</th>
+                        <th class="align-center">Validation Wrapper Ran At</th>
+                        <th class="align-center">PG to RS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="max-width:80px;" class="align-left">{{ projid }} </td>
+                        <td style="max-width:150px;" class="align-left wrapword">{{ projname }} </td>
+                        <td class="align-left">
+                            <span id="lblnojob{{ projid }}">{{ projnojobs }}</span>
+                            <input type="text" id="txtnojob{{ projid }}" name="txtnojob[]" value="{{ projschestdt }}" class="hide form-control" maxlength="50" />
+                            <input type="hidden" id="hidprojid{{ projid }}" name="hidprojid[]" value="{{ projid }}" />
+                        </td>
+                        <td style="max-width:100px;" class="align-left">
+                            <span id="lblstdt{{ projid }}">{{ projschestdt|date:"h:i A" }}</span>
+                            <input type="text" id="txtstdt{{ projid }}" name="txtstdt[]" value="{{ scheduled_start_time|date:'h:i A' }}" class="hide form-control" maxlength="50" />
+                        </td>
+                        
+                        <td style="max-width:120px;" class="align-left wrapword">
+                            <span id="lblrepstdt{{ projid }}">{{ projreptzstdt|date:"h:i A" }}</span>
+                            <input type="text" id="txtrepstdt{{ projid }}" name="txtrepstdt[]" value="{{ scheduled_start_time|date:'h:i A' }}" class="hide form-control" maxlength="50" />
+                        </td>
+                        <td class="wrapword align-left">
+                            <span id="lbllatrundt{{ projid }}">{{ projlastrundt|date:"d-M-Y h:i A" }}</span>
+                            <input type="text" id="txtlatrundt{{ projid }}" name="txtlatrundt[]" value="{{ latest_run_date|date:'d-M-Y h:i A' }}" class="hide form-control" maxlength="50" />
+                        </td>
+                        <td class="wrapword align-left">
+                            <span id="lbllatrundur{{ projid }}">{{ projlastrundur }}</span>
+                            <input type="text" id="txtlatrundur{{ projid }}" name="txtlatrundur[]" value="{{ latest_run_duration_minutes }}" class="hide form-control" maxlength="50" />
+                        </td>
+                        <td class="align-left">
+                            <span id="lblavgrundur{{ projid }}">{{ projavgrundur|date:'m/d/Y h:i A' }}</span>
+                            <input type="text" id="txtavgrundur{{ projid }}" name="txtavgrundur[]" value="{{ average_run_duration_minutes|date:'m/d/Y h:i A' }}" class="hide form-control" maxlength="5" />
+                        </td>
+                        <!--  onclick="doEdit('{{ projid }}')" -->
+                        <td class="align-left">
+                            <span id="lblpo2s3{{ projid }}">{{ projposts3 }}</span>
+                            <input type="text" id="txtpo2s3{{ projid }}" name="txtpo2s3[]" value="{{ postgres_to_redshift_process }}" class="hide form-control" maxlength="10" />
+                        </td>
+                    </tr>  
+                </tbody>
+            </table>
+            <h1 class="page-header">
+            	Jobs 
+                <small class='pull-right'>
+                	<button class="btn btn-success" id="CreJob" data-toggle="modal" data-target="#popcrejobdet" data-keyboard="false" data-backdrop="static">Create Job</button>
+                    <a href="javascript:void(0);" onclick="doUpdateJobs()" class="btn btn-primary hide" id="UptJob">Update</a>
+                    <a href="{{request.get_full_path}}" class="btn btn-danger hide" id="CanJob">Cancel</a>
+				</small>
+			</h1>
+            <input type="hidden" id="hidheadid" name="hidheadid" value="{{ hid }}" />
+            <input type="hidden" id="hidusname" name="hidusname" value="{{ usna }}" />
+            <form id="frmjobdet" name="frmjobdet" action="/upprojobs/?pid={{ projid }}" method="post">
+            {% csrf_token %}
+                <table cellpadding="2" cellspacing="0" width="100%" id="tbljobdet" class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <!-- Job Name	Job Id	Description	Frequency	Category	Active	Is High Frequency	Success Mail Threshold	Success Mail Couter	Incremental Baseline Start Date	Incremental Baseline End Date -->
+                        <tr>
+                            <th style="width:65px;" class="align-center">Job ID</th>
+                            <th style="width:150px;" class="align-center">Job Name</th>
+                            <th class="align-center">Description</th>
+                            <th class="align-center">Frequency</th>
+                            <th style="width:70px;" class="align-center">Category</th>
+                            <th style="width:70px;" class="align-center">Active</th>
+                            <th class="align-center">Is High Frequency</th>
+                            <th style="width:100px;" class="align-center">Success Mail Threshold</th>
+                            <th style="width:95px;" class="align-center">Success Mail Couter</th>
+                            <th style="width:135px;" class="align-center">Incremental Baseline Start Date</th>
+                            <th style="width:135px;" class="align-center">Incremental Baseline End Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for jd in jobdet %}
+                        <tr>
+                            <td style="max-width:65px;" class="align-left">{{ jd.job_id }} </td>
+                            <td style="max-width:150px;" class="align-left wrapword" onclick="doEdit('{{ jd.job_id }}')">
+                                <span id="lbljobname{{ jd.job_id }}">{{ jd.job_name }}</span>
+                                <input type="text" id="txtjobname{{ jd.job_id }}" name="txtjobname" onblur="UpdChkJobNaExists('{{ jd.job_id }}')" value="{{ jd.job_name }}" class="hide form-control" maxlength="50" />
+                            </td>
+                            <td class="align-left" onclick="doEdit('{{ jd.job_id }}')">
+                                <!-- job_id, jm.job_name, jm.job_description, jm.project_id, jm.frequency, jm.category, jm.incremental_baseline_date_start, jm.incremental_baseline_date_end, jm.active, jm.is_high_frequency_job, jm.success_email_threshold, jm.success_email_counter, jm.pk_client, jm.pk_venue, jm.createddate, jm.createdby, wp.project_name -->
+                                <span id="lbljobdesc{{ jd.job_id }}">{{ jd.job_description }}</span>
+                                <textarea id="txtjobdesc{{ jd.job_id }}" name="txtjobdesc" class="hide form-control" rows="3" style="width:200px; resize:vertical;" maxlength="350">{{ jd.job_description }}</textarea>
+                                <input type="hidden" id="hidjobid{{ jd.job_id }}" name="hidjobid" value="{{ jd.job_id }}" />
+                            </td>
+                            <td class="align-left" onclick="doEdit('{{ jd.job_id }}')">
+                                <span id="lblfrequ{{ jd.job_id }}">{{ jd.frequency }}</span>
+                                <input type="text" id="txtfrequ{{ jd.job_id }}" name="txtfrequ" value="{{ jd.frequency }}" class="hide form-control" maxlength="50" />
+                            </td>
+                            
+                            <td style="max-width:70px;" class="align-left wrapword" onclick="doEdit('{{ jd.job_id }}')">
+                                <span id="lblcate{{ jd.job_id }}">{{ jd.category }}</span>
+                                <input type="text" id="txtcate{{ jd.job_id }}" name="txtcate" value="{{ jd.category }}" class="hide form-control" maxlength="50" />
+                            </td>
+                            <td class="align-left" onclick="doEdit('{{ jd.job_id }}')">
+                                <span id="lblactive{{ jd.job_id }}">{{ jd.active }}</span>
+                                <input type="text" id="txtactive{{ jd.job_id }}" name="txtactive" value="{{ jd.active }}" class="hide form-control" maxlength="5" />
+                            </td>
+                            <td class="wrapword align-left" onclick="doEdit('{{ jd.job_id }}')">
+                                <span id="lblhighfreq{{ jd.job_id }}">{{ jd.is_high_frequency_job }}</span>
+                                <input type="text" id="txthighfreq{{ jd.job_id }}" name="txthighfreq" value="{{ jd.is_high_frequency_job }}" class="hide form-control" maxlength="5" />
+                            </td>
+                            <td class="align-left" onclick="doEdit('{{ jd.job_id }}')">
+                                <span id="lbljobemthre{{ jd.job_id }}">{{ jd.success_email_threshold }}</span>
+                                <input type="text" id="txtjobemthre{{ jd.job_id }}" name="txtjobemthre" value="{{ jd.success_email_threshold }}" class="hide form-control" onkeypress="return IsNumeric(event);" ondrop="return false;" onpaste="return false;" maxlength="5" />
+                            </td>
+                            <td class="align-left" onclick="doEdit('{{ jd.job_id }}')">
+                                <span id="lblemacount{{ jd.job_id }}">{{ jd.success_email_counter }}</span>
+                                <input type="text" id="txtemacount{{ jd.job_id }}" name="txtemacount" value="{{ jd.success_email_counter }}" onkeypress="return IsNumeric(event);" ondrop="return false;" onpaste="return false;" class="hide form-control" maxlength="5" />
+                            </td>
+                            <td class="align-left" onclick="doEdit('{{ jd.job_id }}')">
+                                <span id="lblincstdt{{ jd.job_id }}">{{ jd.incremental_baseline_date_start|date:'m/d/Y h:i A' }}</span>
+                                <input type="text" id="txtincstdt{{ jd.job_id }}" name="txtincstdt" value="{{ jd.incremental_baseline_date_start|date:'m/d/Y h:i A' }}" class="hide form-control datetimepicker" maxlength="20" />
+                            </td>
+                            <td class="align-left" onclick="doEdit('{{ jd.job_id }}')">
+                                <span id="lblinceddt{{ jd.job_id }}">{{ jd.incremental_baseline_date_end|date:'m/d/Y h:i A' }}</span>
+                                <input type="text" id="txtinceddt{{ jd.job_id }}" name="txtinceddt" value="{{ jd.incremental_baseline_date_end|date:'m/d/Y h:i A' }}" class="hide form-control datetimepicker" maxlength="20" />
+                            </td>
+                        </tr>  
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </form>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" role="dialog" aria-labelledby="gridSystemModalLabel" id="popcrejobdet">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="gridSystemModalLabel">Create New - Project</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <form id="frmcrtnewjob" name="frmcrtnewjob" action="/wai_insjobdet/?pid={{ projid }}" method="post">
+                        {% csrf_token %}
+                            <div class="row">
+                                <label class="col-lg-4 padding-top10 align-right">Project ID</label>
+                                <div class="col-lg-4">
+                                    <input type="text" class="form-control" id="txtcrtprojid" name="txtcrtprojid" value="{{ projid }}" readonly="readonly" />
+                                </div>
+                            </div>
+                            <div class="padding-5"></div>
+                            <div class="row">
+                                <label class="col-lg-4 padding-top10 align-right">Job ID</label>
+                                <div class="col-lg-4">
+                                    <input type="text" class="form-control" id="txtcrtjobid" onblur="doChkJobIDNaExt(1)" name="txtcrtjobid" />
+                                </div>
+                            </div>
+                            <div class="padding-5"></div>
+                            <div class="row">
+                                <label class="col-lg-4 padding-top10 align-right">Job Name</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" id="txtcrtjobname" onblur="doChkJobIDNaExt(2)" name="txtcrtjobname" maxlength="50" />
+                                </div>
+                            </div>
+                            <div class="padding-5"></div>
+                            <div class="row">
+                                <label class="col-lg-4 padding-top10 align-right">Description</label>
+                                <div class="col-lg-8">
+                                    <textarea class="form-control" rows="4" style="resize:none;" id="txtcrtjobdesc" name="txtcrtjobdesc" maxlength="350" ></textarea>
+                                </div>
+                            </div>
+                            <div class="padding-5"></div>
+                            <div class="row">
+                                <label class="col-lg-4 padding-top10 align-right">Frequency</label>
+                                <div class="col-lg-4">
+                                    <input type="text" class="form-control" id="txtcrtjobfreq" name="txtcrtjobfreq" maxlength="5" />
+                                </div>
+                            </div>
+                            <div class="padding-5"></div>
+                            <div class="row">
+                                <label class="col-lg-4 padding-top10 align-right">Category</label>
+                                <div class="col-lg-4">
+                                    <input type="text" class="form-control" id="txtcrtjobcat" name="txtcrtjobcat" maxlength="50"  />
+                                </div>
+                            </div>
+                            <div class="padding-5"></div>
+                            <div class="row">
+                                <label class="col-lg-4 padding-top10 align-right">Active</label>
+                                <div class="col-lg-4">
+                                    <select class="form-control" id="ddlcrtjobact" name="ddlcrtjobact">
+                                        <option value="">-- Select --</option>
+                                        <option value="Y">Yes</option>
+                                        <option value="N">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="padding-5"></div>
+                            <div class="row">
+                                <label class="col-lg-4 padding-top10 align-right">Is High Frequency</label>
+                                <div class="col-lg-4">
+                                	<select class="form-control" id="dllcrtjobhifreq" name="dllcrtjobhifreq">
+                                    	<option value="N">No</option>
+                                        <option value="Y">Yes</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="padding-5"></div>
+                            <div class="row">
+                                <label class="col-lg-4 align-right wrapword">Incremental Baseline<br /> Start Date</label>
+                                <div class="col-lg-4">
+                                    <input type="text" class="form-control datetimepicker" id="txtcrtjobinstdate" name="txtcrtjobinstdate" maxlength="25"  />
+                                </div>
+                            </div>
+                            <div class="padding-5"></div>
+                            <div class="row">
+                                <label class="col-lg-4 align-right wrapword">Incremental Baseline<br /> End Date</label>
+                                <div class="col-lg-4">
+                                    <input type="text" class="form-control datetimepicker" id="txtcrtjobineddate" name="txtcrtjobineddate" maxlength="25" />
+                                </div>
+                            </div>
+                        </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="doCreNewJob();">Save</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script>
+	$(document).ready(function() {
+		$('#tbljobdet').dataTable(
+			{
+				"lengthMenu": [[25, 50, 75, 100, -1], [25, 50, 75, 100, "All"]],
+				"order": [[ 0, "asc" ]],
+				"bAutoWidth": false
+			}
+		);
+		$('.datetimepicker').datetimepicker({
+			"useCurrent":false
+		});
+	});
+</script>
+{% endblock %}

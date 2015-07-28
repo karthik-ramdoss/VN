@@ -1,0 +1,253 @@
+{% extends "wai_base.html" %}
+{% block title %}
+	<title>:: Wisdom Admin Interface :: - Process Monitoring</title>
+{% endblock %}
+{% block script %}
+	<script language='javascript'>
+		function doViewAllDet(projid)
+		{
+			document.getElementById("hidseldt").value = document.getElementById("txtjobdate").value;
+			document.getElementById("hidselpid").value = projid;
+			document.getElementById("hidselstatus").value = document.getElementById("ddlstatus").value;
+			document.frmprocjobsrun.submit();
+		}
+		function doUpdate(jobid)
+		{
+			$('body').append('<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-160"></i></div>');	
+			document.location.href = "/wai_mngprocmoni/";
+		}
+    </script>
+{% endblock %}
+{% block ddlclient %}
+	<select id="ddlheadclie" name="ddlheadclie" class="form-control">    
+	{% for cd in clidet %}
+	   	<option value="{{ cd.pk_client }}">{{ cd.client_name }}</option>
+	{% endfor %}
+    </select>
+{% endblock %}
+{% block ddlvenue %}
+	<select id="ddlheadvenu" name="ddlheadvenu" class="form-control">    
+	{% for vn in vendet %}
+	   	<option value="{{ vn.pk_venue }}">{{ vn.venue_name }}</option>
+	{% endfor %}
+    </select>
+{% endblock %}
+{% block body %}
+<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-270"></i></div>
+<div class="">
+    <div class="container padding-top10 padding-bottom30">
+        <h1 class="page-header">Process Monitoring</h1>
+        <input type="hidden" id="hidheadid" name="hidheadid" value="{{ hid }}" />
+        <input type="hidden" id="hidusname" name="hidusname" value="{{ usna }}" />
+        <input type="hidden" id="hidustype" name="hidustype" value="{{ ustyp }}" />
+        {% for pg in pgdet %}
+            <input type="hidden" id="hidpgnames" name="hidpgnames" value="{{ pg.page_name }}" />
+            <input type="hidden" id="hidpgviews" name="hidpgviews" value="{{ pg.page_view }}" />
+            <input type="hidden" id="hidpgedits" name="hidpgedits" value="{{ pg.page_edit }}" />
+            <input type="hidden" id="hidpgdeles" name="hidpgdeles" value="{{ pg.page_delete }}" />
+        {% endfor %}
+        <form id="frmvivalmas" name="frmvivalmas" action="/wai_mngprocmoni/" method="post">
+        {% csrf_token %}
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="input-group">
+                        <span for="ddlproject" class="input-group-addon">Project Name</span>
+                        <select id="ddlproject" name="ddlproject" class="form-control">
+                            <option value="">All</option>
+                            {% for pd in projdet %}
+                            <option value="{{ pd.project_id }}">{{ pd.project_name }} ({{ pd.project_id }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 hide">
+                    <div class="input-group">
+                        <span for="ddlactive" class="input-group-addon">Active</span>
+                        <select id="ddlactive" name="ddlactive" class="form-control">
+                            <option value="">All</option>
+                            <option value="Y">Yes</option>
+                            <option value="N">No</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="input-group">
+                        <span for="ddlstatus" class="input-group-addon">Status</span>
+                        <select id="ddlstatus" name="ddlstatus" class="form-control">
+                            <option value="">All</option>
+                            <option value="S">Succeed</option>
+                            <option value="F">Failed</option>
+                            <option value="P">Pending</option>
+                        </select>
+                        <!--option value="R">Running</option -->
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="input-group">
+                        <span for="ddlstatus" class="input-group-addon">Date </span>
+                        <input type="text" id="txtjobdate" name="txtjobdate" value="{{ seldt }}" class="form-control datepicker" />
+                    </div>
+                </div>
+                <div class="col-lg-1"><input type="submit" id="btnsubmit" name="btnsubmit" value="Submit" class="btn btn-info" /></div>
+                <div class="col-lg-3 align-right"></div>
+                
+            </div>
+        </form>
+    </div>
+</div>
+<div class="">
+    <div class="container padding-bottom20">
+        <div class="row">
+            <div class="col-lg-12 align-center">
+            	<div class="padding-10"></div>
+                	<form id="frmprocjobsrun" name="frmprocjobsrun" method="post" action="/wai_procsjobs/">
+                    	{% csrf_token %}
+                        <input type="hidden" id="hidseldt" name="hidseldt" />
+                        <input type="hidden" id="hidselpid" name="hidselpid" />
+                        <input type="hidden" id="hidselstatus" name="hidselstatus" />
+                    </form>
+            	<table cellpadding="2" cellspacing="0" width="100%" id="procdet" class="table table-striped table-bordered table-hover">
+                    <thead>
+                    	<tr>
+                        	{% if projid == "" %}
+                            <th style="width:150px;" class="align-center">Project Name</th>
+                            <th style="width:80px;" class="align-center">Project ID</th>
+                            {% endif %}
+                            <th style="width:100px;" class="align-center">No. of Jobs {{ projid }}</th>
+                            <th style="width:100px;" class="align-center">Schedule Start Time</th>
+                            <th style="width:100px;" class="align-center">No. of Jobs Run</th>
+                        	<th style="width:150px;" class="align-center">Validation</th>
+                            <th style="width:150px;" class="align-center">Postgres to Red Shift</th>
+                            <th style="width:100px;" class="align-center">View Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!--procdet -->
+                        {% for prcdt in procdet %}                        
+                        <tr>
+                        	{% if projid == "" %}
+                            <td style="max-width:150px;" class="align-left wrapword">{{ prcdt.project_name }}</td>
+                            <td style="max-width:80px;" class="align-left">{{ prcdt.project_id }} </td>
+                            {% endif %}
+                            <td style="width:100px;" class="align-left" >
+                            	{{ prcdt.number_of_jobs }}
+                            </td>
+                            <td style="width:100px;" class="align-left" >
+                            	{{ prcdt.scheduled_start_time|date:'h:i A' }}
+                            </td> 
+                            <td style="width:100px;" class="align-center">
+                            	{{ prcdt.total_job_run }}
+                            </td>
+                            {% if prcdt.total_fail_job > 0 %}
+                            	<td style="max-width:150px;" class="align-left red">
+                                    Not Passed
+                                </td>
+                                <td style="max-width:150px;" class="align-left red">
+                                    Failed
+                                </td>
+                            {% else %}
+                            	{% if seldt < cursysdt %}
+                                	{% if prcdt.total_succ_job >= prcdt.number_of_jobs and prcdt.val_fail_job <= 0 %}
+                                    <td style="max-width:150px;" class="align-left green">
+                                        Passed
+                                    </td>
+                                    <td style="max-width:150px;" class="align-left green">
+                                        Succeeded
+                                    </td>
+                                    {% elif prcdt.val_fail_job > 0 %}
+                                    <td style="max-width:150px;" class="align-left red">
+                                        Not Passed
+                                    </td>
+                                    <td style="max-width:150px;" class="align-left red">
+                                        Failed
+                                    </td>
+                                    {% elif prcdt.total_job_run > 0 %}
+                                    <td style="max-width:150px;" class="align-left red">
+                                        Not Passed
+                                    </td>
+                                    <td style="max-width:150px;" class="align-left red">
+                                        Failed
+                                    </td>
+                                    {% else %}
+                                    <td style="max-width:150px;" class="align-left red">
+                                        Not Passed
+                                    </td>
+                                    <td style="max-width:150px;" class="align-left red">
+                                        Failed
+                                    </td>
+                                     {% endif %}
+                                {% else %}
+                                    {% if prcdt.total_succ_job >= prcdt.number_of_jobs and prcdt.val_fail_job <= 0  %}
+                                    <td style="max-width:150px;" class="align-left green">
+                                        Passed
+                                    </td>
+                                    <td style="max-width:150px;" class="align-left green">
+                                        Succeeded
+                                    </td>
+                                    {% elif prcdt.val_fail_job > 0 %}
+                                    <td style="max-width:150px;" class="align-left red">
+                                        Not Passed
+                                    </td>
+                                    <td style="max-width:150px;" class="align-left red">
+                                        Failed
+                                    </td>
+                                    {% elif prcdt.total_job_run > 0 %}
+                                    <td style="max-width:150px;" class="align-left blue">
+                                        In-Progress
+                                    </td>
+                                    <td style="max-width:150px;" class="align-left blue">
+                                        In-Progress
+                                    </td>
+                                    {% else %}
+                                    <td style="max-width:150px;" class="align-left orange">
+                                        Pending
+                                    </td>
+                                    <td style="max-width:150px;" class="align-left orange">
+                                        Pending
+                                    </td>
+                                    {% endif %}
+								{% endif %}
+                            {% endif %}
+                            
+                            <td style="max-width:100px;" class="align-left">
+                                <a href="javascript:void(0);" onclick="doViewAllDet('{{ prcdt.project_id }}')">View Details</a>
+                            </td>
+                        </tr>                            
+                        {% endfor %}
+                    </tbody>
+                </table>
+            	
+            </div>
+        </div>
+    </div>
+</div>
+<script language='javascript'>
+	document.getElementById("ddlproject").value = "{{ projid }}";
+	document.getElementById("ddlactive").value = "{{ actsta }}";
+	document.getElementById("ddlstatus").value = "{{ status }}";	
+	d = new Date();
+	curdate = (d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear()
+	$(document).ready(function() {
+		$('.datepicker').datetimepicker({
+			"useCurrent": true,
+			"format": 'L',
+			"maxDate": curdate
+		});
+		{% if projid == "" %}
+		$('#procdet').dataTable(
+			{
+				"lengthMenu": [[50, 100, 150, 200, -1], [50, 100, 150, 200, "All"]],
+				"order": [[ 3, "asc" ]]
+			}
+		);
+		{% else %}
+		$('#procdet').dataTable(
+			{
+				"lengthMenu": [[50, 100, 150, 200, -1], [50, 100, 150, 200, "All"]],
+				"order": [[ 1, "asc" ]]
+			}
+		);
+		{% endif %}	
+	});
+</script>
+{% endblock %}

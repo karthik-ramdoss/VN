@@ -1,0 +1,127 @@
+{% extends "wai_base.html" %}
+{% load staticfiles %}
+{% block title %}
+	<title>:: Wisdom Admin Interface :: - Splunk Create User</title>
+{% endblock %}
+{% block script %}
+	<script language="javascript">
+		function doSubSplCrtUsrs()
+		{
+			if(trimAllSpace(document.getElementById("user_name").value) == "")
+			{
+				alert("Please enter the user name");
+				document.getElementById("user_name").focus();
+				return false;
+			}
+			
+			if(trimAllSpace(document.getElementById("password").value) == "")
+			{
+				alert("Please enter the password");
+				document.getElementById("password").focus();
+				return false;
+			}
+			
+			if(trimAllSpace(document.getElementById("roles").value) == "")
+			{
+				alert("Please enter the roles");
+				document.getElementById("roles").focus();
+				return false;
+			}
+			
+			if(trimAllSpace(document.getElementById("timezone").value) == "")
+			{
+				alert("Please enter the timezone");
+				document.getElementById("timezone").focus();
+				return false;
+			}
+			return true;
+		}
+	</script>
+{% endblock %}
+{% block ddlclient %}
+	<select id="ddlheadclie" name="ddlheadclie" class="form-control">    
+	{% for cd in clidet %}
+	   	<option value="{{ cd.pk_client }}">{{ cd.client_name }}</option>
+	{% endfor %}
+    </select>
+{% endblock %}
+{% block ddlvenue %}
+	<select id="ddlheadvenu" name="ddlheadvenu" class="form-control">    
+	{% for vn in vendet %}
+	   	<option value="{{ vn.pk_venue }}">{{ vn.venue_name }}</option>
+	{% endfor %}
+    </select>
+{% endblock %}
+{% block body %}
+<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-270"></i></div>
+    
+<div class="container-fluid">
+	<div class="row">
+    	<div class="col-sm-3 col-md-2 sidebar">
+        	<ul class="nav nav-sidebar">
+           		<li id="lisplusr"><a href="../wai_mngsplcrtusr/">Create Splunk Users</a></li>
+                <li id="lisplrol"><a href="../wai_mngsplcrtrol/">Create Splunk Roles</a></li>
+			</ul>
+		</div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 padding-bottom20">
+        	<h1 class="page-header">Create Splunk User<small class='pull-right'></small></h1>
+            <input type="hidden" id="hidheadid" name="hidheadid" value="{{ hid }}" />
+            <input type="hidden" id="hidusname" name="hidusname" value="{{ usna }}" />
+            <input type="hidden" id="hidustype" name="hidustype" value="{{ ustyp }}" />
+            {% for pg in pgdet %}
+                <input type="hidden" id="hidpgnames" name="hidpgnames" value="{{ pg.page_name }}" />
+                <input type="hidden" id="hidpgviews" name="hidpgviews" value="{{ pg.page_view }}" />
+                <input type="hidden" id="hidpgedits" name="hidpgedits" value="{{ pg.page_edit }}" />
+                <input type="hidden" id="hidpgdeles" name="hidpgdeles" value="{{ pg.page_delete }}" />
+            {% endfor %}
+            <form id="frmcrtspluser" name="frmcrtspluser" class="form-horizontal" role="form" action="/submit_user/" method="get" onsubmit="return doSubSplCrtUsrs();">
+            	{% csrf_token %}
+	            <fieldset>
+                	<div class="control-group">
+                    	<div class="col-xs-3">
+                    		<label class="control-label" for="user_name">User Name</label>
+                        	<input type="text" name="user_name" id="user_name" placeholder="Enter New User Name" class="form-control" />
+						</div>
+					</div>
+                    <div class="control-group">
+                    	<div class="col-xs-3">
+                        	<label class="control-label" for="password">Password</label>
+                            <input type="password" name="password" id="password" placeholder="Enter Password" class="form-control" />
+						</div>
+					</div>
+                    <div class="control-group">
+                    	<div class="col-xs-3">
+                        	<label class="control-label" for="roles">Roles</label>
+                            <input type="text" name="roles" id="roles" placeholder="Default: user" class="form-control" />
+						</div>
+					</div>
+                    <div class="control-group">
+                    	<div class="col-xs-3">
+                        	<label class="control-label" for="timezone">Timezone</label>
+                            <input type="text" name="timezone" id="timezone" placeholder="Default: Pacific" class="form-control" />
+						</div>
+					</div>
+                    <div class="row hide">
+                    	<div class="col-lg-12">
+                            <div class="control-group">
+                            	<div class="col-xs-3">
+                                	<div class="checkbox"><label class="control-label"><input type="checkbox"   name="host0" id="host0" value="localhost" />Searchhead 0</label></div>
+                                </div>
+                                <div class="col-xs-3">
+                                	<div class="checkbox"><label class="control-label"><input type="checkbox"   name="host1" id="host1" value="wisdom-qa-pentaho-1.venuenext.net" />Searchhead 1</label></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                	<div class="row">
+                    	<div class="col-lg-12 align-center padding-top20">
+    	                	<button id="submit_button" name="submit_button" class="btn btn-primary">Submit</button>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+            <div class="padding-10"></div>
+		</div>
+	</div>
+</div>
+{% endblock %}

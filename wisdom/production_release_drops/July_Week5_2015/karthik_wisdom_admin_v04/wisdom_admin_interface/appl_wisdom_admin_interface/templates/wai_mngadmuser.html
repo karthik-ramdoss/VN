@@ -1,0 +1,706 @@
+{% extends "wai_base.html" %}
+{% load staticfiles %}
+{% block title %}
+	<title>:: Wisdom Admin Interface :: - Manage Users</title>
+{% endblock %}
+{% block script %}
+	<script language='javascript'>
+        function CreateNew()
+        {
+            document.location.href = "/wai_crtuser/";
+        }
+		function dousredit(usrid)
+		{
+			// hidusrid, lblusrname, txtusrname, lblusremail, txtusremail, lblusract, ddlusract, lblusrtype, ddlusrtype
+			strhidelbl = "#lblusrname" + usrid;
+			strhidelbl = strhidelbl + ", #lblusremail" + usrid;
+			strhidelbl = strhidelbl + ", #lblusract" + usrid;
+			strhidelbl = strhidelbl + ", #lblusrtype" + usrid;
+			//strhidelbl = strhidelbl + ", #btncrtnewusr";
+			
+			//btncanusred, btnupdusr, btncrtnewusr
+				
+			strviewtxt = "#txtusrname" + usrid;
+			strviewtxt = strviewtxt + ", #txtusremail" + usrid;
+			strviewtxt = strviewtxt + ", #ddlusract" + usrid;
+			strviewtxt = strviewtxt + ", #ddlusrtype" + usrid;
+			strviewtxt = strviewtxt + ", #btncanusred";
+			strviewtxt = strviewtxt + ", #btnupdusr";				
+			
+			$(strhidelbl).addClass("hide");
+			$(strviewtxt).removeClass("hide");			
+		}
+		function doUpdate()
+		{
+			arrObjTxtUsNam = document.getElementsByName("txtusrname");
+			arrObjTxtUsEmai = document.getElementsByName("txtusremail");
+			arrObjDdlUsAct = document.getElementsByName("ddlusract");
+			arrObjDdlUsTyp = document.getElementsByName("ddlusrtype");
+			
+			for(i = 0; i < arrObjTxtUsNam.length; i++)
+			{
+				if(trimAllSpace(arrObjTxtUsNam[i].value) == "")
+				{
+					alert("Please enter the name");
+					arrObjTxtUsNam[i].focus();
+					arrObjTxtUsNam[i].select();
+					return false;
+				}
+				if(trimAllSpace(arrObjTxtUsEmai[i].value) == "")
+				{
+					alert("Please enter the email id");
+					arrObjTxtUsEmai[i].focus();
+					arrObjTxtUsEmai[i].select();
+					return false;
+				}
+				if(!emailChecker(arrObjTxtUsEmai[i].value))
+				{
+					arrObjTxtUsEmai[i].focus();
+					arrObjTxtUsEmai[i].select();
+					return false;
+				}
+				if(trimAllSpace(arrObjDdlUsAct[i].value) == "")
+				{
+					alert("Please select the active status");
+					arrObjDdlUsAct[i].focus();
+					return false;
+				}
+				if(trimAllSpace(arrObjDdlUsTyp[i].value) == "")
+				{
+					alert("Please select the user type");
+					arrObjDdlUsTyp[i].focus();
+					return false;
+				}
+			}
+			$('body').append('<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-160"></i></div>');
+			$('body').css("overflow", "hidden");
+			document.frmusrdet.submit();
+		}
+		function dovipermis(userid, ustyp)
+		{
+			document.getElementById("hidusridper").value = userid;
+			$.ajax({
+				url : "/wai_usrpermission/", 
+				type : "POST",
+				data : $('#frmusrperajax').serialize(),
+				success : function(data) {
+					$('#divedpermis').html( data);
+					document.getElementById("btnupdpermiss").click();
+					if(trimAllSpace(ustyp) == "SA"){
+						$('input[type="checkbox"]').each(function() { 
+							this.checked = true;
+							this.disabled = true;
+						});
+					}
+					document.getElementById("hidusridper").value = "";
+				},
+				error : function(xhr,errmsg,err) {
+					alert(xhr.status + ": " + xhr.responseText);
+				}
+			});
+		}
+		
+		function doSaveCrtUsr()
+		{
+			if(trimAllSpace(document.getElementById("txcrtusname").value) == "")
+			{
+				alert("Please enter the name");
+				document.getElementById("txcrtusname").focus();
+				document.getElementById("txcrtusname").select();
+				return false;
+			}
+			if(trimAllSpace(document.getElementById("txtcrtusemailid").value) == "")
+			{
+				alert("Please enter the email id");
+				document.getElementById("txtcrtusemailid").focus();
+				document.getElementById("txtcrtusemailid").select();
+				return false;
+			}
+			if(!emailChecker(document.getElementById("txtcrtusemailid").value))
+			{
+				document.getElementById("txtcrtusemailid").focus();
+				document.getElementById("txtcrtusemailid").select();
+				return false;
+			}
+			if(trimAllSpace(document.getElementById("ddlcrtusactive").value) == "")
+			{
+				alert("Please select the active status");
+				document.getElementById("ddlcrtusactive").focus();
+				return false;
+			}
+			if(trimAllSpace(document.getElementById("ddlcrtustype").value) == "")
+			{
+				alert("Please select the user type");
+				document.getElementById("ddlcrtustype").focus();
+				return false;
+			}
+			arrObjChkView = document.getElementsByName("chkview");
+			arrObjHidView = document.getElementsByName("hidview");
+			arrObjChkEdit = document.getElementsByName("chkedit");
+			arrObjHidEdit = document.getElementsByName("hidedit");
+			arrObjChkDel = document.getElementsByName("chkdelet");
+			arrObjHidDel = document.getElementsByName("hiddel");
+			
+			for(i = 0; i < arrObjChkView.length; i++)
+			{
+				if(arrObjChkView[i].checked)
+					arrObjHidView[i].value = "Y";
+				else
+					arrObjHidView[i].value = "N";
+					
+				if(arrObjChkEdit[i].checked)
+					arrObjHidEdit[i].value = "Y";
+				else
+					arrObjHidEdit[i].value = "N";
+					
+				if(arrObjChkDel[i].checked)
+					arrObjHidDel[i].value = "Y";
+				else
+					arrObjHidDel[i].value = "N";
+			}
+			$('body').append('<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-160"></i></div>');
+			$('body').css("overflow", "hidden");
+			document.frmcrtnewuser.submit();
+		}
+		
+		function doselall(intype)
+		{
+			arrObjChkView = document.getElementsByName("chkview");
+			arrObjHidView = document.getElementsByName("hidview");
+			arrObjChkEdit = document.getElementsByName("chkedit");
+			arrObjHidEdit = document.getElementsByName("hidedit");
+			//arrObjChkDel = document.getElementsByName("chkdelet");
+			//arrObjHidDel = document.getElementsByName("hiddel");
+			
+			if((intype *1) == 1)
+			{
+				for(i = 0; i < arrObjChkView.length; i++)
+				{
+					arrObjChkView[i].checked = true;
+					arrObjChkEdit[i].checked = true;
+					//arrObjChkDel[i].checked = true;
+				}
+			}
+			else if((intype *1) == 2)
+			{
+				for(i = 0; i < arrObjChkView.length; i++)
+				{
+					arrObjChkView[i].checked = false;
+					arrObjChkEdit[i].checked = false;
+					//arrObjChkDel[i].checked = false;
+				}
+			}
+		}	
+		
+		function doupdselall(intype)
+		{
+			arrObjChkView = document.getElementsByName("chkupdview");
+			arrObjHidView = document.getElementsByName("hidupdview");
+			arrObjChkEdit = document.getElementsByName("chkupdedit");
+			arrObjHidEdit = document.getElementsByName("hidupdedit");
+			//arrObjChkDel = document.getElementsByName("chkupddelet");
+			//arrObjHidDel = document.getElementsByName("hidupddel");
+			
+			if((intype *1) == 1)
+			{
+				for(i = 0; i < arrObjChkView.length; i++)
+				{
+					arrObjChkView[i].checked = true;
+					arrObjChkEdit[i].checked = true;
+					//arrObjChkDel[i].checked = true;
+				}
+			}
+			else if((intype *1) == 2)
+			{
+				for(i = 0; i < arrObjChkView.length; i++)
+				{
+					arrObjChkView[i].checked = false;
+					arrObjChkEdit[i].checked = false;
+					//arrObjChkDel[i].checked = false;
+				}
+			}
+		}	
+		
+		function doSaveUpdPerm()
+		{
+			arrObjChkView = document.getElementsByName("chkupdview");
+			arrObjHidView = document.getElementsByName("hidupdview");
+			arrObjChkEdit = document.getElementsByName("chkupdedit");
+			arrObjHidEdit = document.getElementsByName("hidupdedit");
+			/*arrObjChkDel = document.getElementsByName("chkupddelet");
+			arrObjHidDel = document.getElementsByName("hidupddel");*/
+			
+			for(i = 0; i < arrObjChkView.length; i++)
+			{
+				if(arrObjChkView[i].checked)
+					arrObjHidView[i].value = "Y";
+				else
+					arrObjHidView[i].value = "N";
+					
+				if(arrObjChkEdit[i].checked)
+					arrObjHidEdit[i].value = "Y";
+				else
+					arrObjHidEdit[i].value = "N";
+					
+				/*if(arrObjChkDel[i].checked)
+					arrObjHidDel[i].value = "Y";
+				else
+					arrObjHidDel[i].value = "N";*/
+			}
+			$('body').append('<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-160"></i></div>');
+			$('body').css("overflow", "hidden");
+			document.frmusrpermission.submit();
+		}
+		
+		function doChkUserIDNaExt(intChoose)
+		{
+			/*
+				txtcrtusemailid, ddlcrtusactive
+			*/
+			if((intChoose * 1) == 2)
+			{
+				if(trimAllSpace(document.getElementById("txtcrtusemailid").value) != "")
+				{
+					$('.modal-body').append('<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-160"></i></div>');
+					var myKeyVals = { usrname: document.getElementById("txtcrtusemailid").value, csrfmiddlewaretoken:'{{csrf_token}}'  }
+					$.ajax({
+						url : "/wai_extusridna/", 
+						type : "POST",
+						data : myKeyVals,
+						success : function(data) {
+							setTimeout(function() {
+								$('.modal-body').find('.message-loading-overlay').remove();
+								if((data * 1) > 0){
+									alert("User name already exists.");
+									$("#txtcrtusemailid").val('').focus();
+								}
+								else
+									$("#ddlcrtusactive").focus();
+							}, 500 + parseInt(Math.random() * 500));
+							return false;
+						},
+						error : function(xhr,errmsg,err) {
+							$('.modal-body').find('.message-loading-overlay').remove();
+							alert(xhr.status + ": " + xhr.responseText);
+						}
+					});
+				}
+			}
+		}
+		
+		function UpdChkUsrNaExists(usrid)
+		{
+/* txtusremail, ddlusract	*/
+			objTxtUsrNa = "txtusremail" + usrid;
+			if(trimAllSpace(document.getElementById(objTxtUsrNa).value) != "")
+			{
+				objDDLUsrAct = "ddlusract" + usrid;
+				$('body').append('<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-160"></i></div>');
+				var myKeyVals = { usid: usrid, usname: document.getElementById(objTxtUsrNa).value, csrfmiddlewaretoken:'{{csrf_token}}'  }
+				$.ajax({
+					url : "/wai_extusridna/", 
+					type : "POST",
+					data : myKeyVals,
+					success : function(data) {
+						setTimeout(function() {
+							$('body').find('.message-loading-overlay').remove();
+							if((data * 1) > 0){
+								alert("User name already exists.");
+								$("#" + objTxtUsrNa).val('').focus();
+							}
+							else
+								$("#" + objDDLUsrAct).focus();
+						}, 500 + parseInt(Math.random() * 500));
+						return false;
+					},
+					error : function(xhr,errmsg,err) {
+						$('body').find('.message-loading-overlay').remove();
+						alert(xhr.status + ": " + xhr.responseText);
+					}
+				});
+			}
+		}
+		
+		$(document).ready(function() {		
+			$('#ddlcrtustype').on("change", function(){
+				if(this.value == "SA"){
+					$('input[type="checkbox"]').each(function() { 
+						this.checked = true;
+						this.disabled = true;
+					});
+				}
+				else
+				{
+					$('input[type="checkbox"]').each(function() { 
+						this.checked = false;
+						this.disabled = false;
+					});
+				}
+			});
+		});	
+		
+    </script>
+{% endblock %}
+{% block ddlclient %}
+	<select id="ddlheadclie" name="ddlheadclie" class="form-control">    
+	{% for cd in clidet %}
+	   	<option value="{{ cd.pk_client }}">{{ cd.client_name }}</option>
+	{% endfor %}
+    </select>
+{% endblock %}
+{% block ddlvenue %}
+	<select id="ddlheadvenu" name="ddlheadvenu" class="form-control">    
+	{% for vn in vendet %}
+	   	<option value="{{ vn.pk_venue }}">{{ vn.venue_name }}</option>
+	{% endfor %}
+    </select>
+{% endblock %}
+{% block body %}
+	<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-270"></i></div>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul class="nav nav-sidebar">
+                    <li id="livalmas"><a href="../wai_mngvalmas/">Manage Data Validation</a></li>
+                    <li id="liprojob"><a href="../wai_mngprojob/">Manage Projects & Jobs</a></li>
+                    <li id="licliven"><a href="../wai_mngcliven/">Manage Clients & Venues</a></li>
+                    <li id="liadmusr"><a href="../wai_mngadmuser/">Manage Users & Roles</a></li>
+                </ul>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 padding-bottom20">
+                <h1 class="page-header">
+                	Manage Users & Roles
+                    <small class='pull-right'>
+                    	<a href="{{request.get_full_path}}" class="btn btn-danger hide" id="btncanusred">Cancel</a>&nbsp;&nbsp;
+                        <a href="javascript:voi(0);" onclick="doUpdate()" class="btn btn-primary hide" id="btnupdusr" name="btnupdusr">Update</a>&nbsp;&nbsp;
+                        <a href="javascript:void(0);" class="btn btn-success" id="btncrtnewusr" name="btncrtnewusr" data-toggle="modal" data-target="#divshusrdet" data-keyboard="false" data-backdrop="static">Create User</a>
+                        <a href="javascript:void(0);" class="btn btn-success hide" id="btnupdpermiss" name="btnupdpermiss" data-toggle="modal" data-target="#divshusrpermis" data-keyboard="false" data-backdrop="static">View Permission</a>
+
+                    </small>
+				</h1>
+                <input type="hidden" id="hidheadid" name="hidheadid" value="{{ hid }}" />
+                <input type="hidden" id="hidusname" name="hidusname" value="{{ usna }}" />
+                <input type="hidden" id="hidustype" name="hidustype" value="{{ ustyp }}" />
+                {% for pg in pgdet %}
+                    <input type="hidden" id="hidpgnames" name="hidpgnames" value="{{ pg.page_name }}" />
+                    <input type="hidden" id="hidpgviews" name="hidpgviews" value="{{ pg.page_view }}" />
+                    <input type="hidden" id="hidpgedits" name="hidpgedits" value="{{ pg.page_edit }}" />
+                    <input type="hidden" id="hidpgdeles" name="hidpgdeles" value="{{ pg.page_delete }}" />
+                {% endfor %}
+                <form id="frmusrperajax" name="frmusrperajax" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" id="hidusridper" name="hidusridper" />
+                </form>
+                <form id="frmusrdet" name="frmusrdet" method="post" action="/wai_mngadmuser/">
+                    {% csrf_token %}
+                    <table cellpadding="2" cellspacing="0" id="tblusrdet" width="100%" class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th style="width:50px;" class="align-center">User ID</th>
+                                <th style="width:150px;" class="align-center">Name</th>
+                                <th style="width:150px;" class="align-center">User Name (Email ID)</th>
+                                <th style="width:75px;" class="align-center">Active</th>
+                                <th style="width:105px;" class="align-center">User Role</th>
+                                <th style="width:120px;" class="align-center">Last Logged In</th>
+                                <th style="width:75px;" class="align-center"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for us in usrdet %}
+                            <tr>
+                                <td style="max-width:95px;" class="align-left">
+                                    <!-- select admin_userid, admin_username, admin_emailid, admin_active, admin_usertype, last_loggedin from wisdom_users where admin_userid <> 1 -->
+                                    {{ us.admin_userid }} 
+                                    <input type="hidden" id="hidusrid{{ us.admin_userid }}" name="hidusrid" value="{{ us.admin_userid }}" />
+                                </td>
+                                <td style="max-width:150px;" class="wrapword align-left" onclick="dousredit('{{ us.admin_userid }}')">
+                                    <span id="lblusrname{{ us.admin_userid }}">{{ us.admin_username }}</span>
+                                    <input type="text" id="txtusrname{{ us.admin_userid }}" name="txtusrname" class="hide form-control" maxlength="50" value="{{ us.admin_username }}" />
+                                </td>
+                                <td style="max-width:150px;" class="wrapword align-left" onclick="dousredit('{{ us.admin_userid }}')">
+                                    <span id="lblusremail{{ us.admin_userid }}">{{ us.admin_emailid }}</span>
+                                    <input type="text" id="txtusremail{{ us.admin_userid }}" name="txtusremail" value="{{ us.admin_emailid }}" onblur="UpdChkUsrNaExists('{{ us.admin_userid }}')" class="hide form-control" maxlength="50" />
+                                </td>
+                                <td style="max-width:75px;" class="align-left" onclick="dousredit('{{ us.admin_userid }}')">
+                                    {% if us.admin_active.strip == "Y" %}
+                                        <span id="lblusract{{ us.admin_userid }}">Yes</span>
+                                        <select id="ddlusract{{ us.admin_userid }}" name="ddlusract" class="hide form-control">
+                                            <option value="">-- Select --</option>
+                                            <option value="Y" selected="selected">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    {% elif us.admin_active.strip == "N" %}
+                                        <span id="lblusract{{ us.admin_userid }}">No</span>
+                                        <select id="ddlusract{{ us.admin_userid }}" name="ddlusract" class="hide form-control">
+                                            <option value="">-- Select --</option>
+                                            <option value="Y">Yes</option>
+                                            <option value="N" selected="selected">No</option>
+                                        </select>
+                                    {% elif us.admin_active.strip == "" %}
+                                        <span id="lblusract{{ us.admin_userid }}"> - </span>
+                                        <select id="ddlusract{{ us.admin_userid }}" name="ddlusract" class="hide form-control">
+                                            <option value="">-- Select --</option>
+                                            <option value="Y">Yes</option>
+                                            <option value="N" selected="selected">No</option>
+                                        </select>
+                                    {% endif %}
+                                    
+                                </td>
+                                <td style="max-width:105px;" class="align-left" onclick="dousredit('{{ us.admin_userid }}')">
+                                    {% if us.admin_usertype.strip == "A" %}
+                                        <span id="lblusrtype{{ us.admin_userid }}">Admin</span>
+                                        <select id="ddlusrtype{{ us.admin_userid }}" name="ddlusrtype" class="hide form-control">
+                                            <option value="">-- Select --</option>
+                                            <option value="A" selected="selected">Admin</option>
+                                            <option value="U">Standard User</option>
+                                            <option value="SA">Super Admin</option>
+                                        </select>
+                                    {% elif us.admin_usertype.strip == "U" %}
+                                        <span id="lblusrtype{{ us.admin_userid }}">Standard User</span>
+                                        <select id="ddlusrtype{{ us.admin_userid }}" name="ddlusrtype" class="hide form-control">
+                                            <option value="">-- Select --</option>
+                                            <option value="A">Admin</option>
+                                            <option value="U" selected="selected">Standard User</option>
+                                            <option value="SA">Super Admin</option>
+                                        </select>
+                                    {% elif us.admin_usertype.strip == "SA" %}
+                                        <span id="lblusrtype{{ us.admin_userid }}">Super Admin</span>
+                                        <select id="ddlusrtype{{ us.admin_userid }}" name="ddlusrtype" class="hide form-control">
+                                            <option value="">-- Select --</option>
+                                            <option value="A">Admin</option>
+                                            <option value="U">Standard User</option>
+                                            <option value="SA" selected="selected">Super Admin</option>
+                                        </select>
+                                    {% elif us.admin_usertype.strip == "" %}
+                                        <span id="lblusrtype{{ us.admin_userid }}"> - </span>
+                                        <select id="ddlusrtype{{ us.admin_userid }}" name="ddlusrtype" class="hide form-control">
+                                            <option value="">-- Select --</option>
+                                            <option value="A">Admin</option>
+                                            <option value="U">Standard User</option>
+                                            <option value="SA">Super Admin</option>
+                                        </select>
+                                    {% endif %}
+                                    
+                                </td>
+                                <td style="max-width:120px;" class="align-left" onclick="dousredit('{{ us.admin_userid }}')">
+                                    <span id="lblusrlastlog{{ us.admin_userid }}">{{ us.last_loggedin|date:'m/d/Y h:i A' }}</span>
+                                </td>
+                                <td class="align-left">
+                                    <a href="javascript:void(0);" onclick="dovipermis('{{ us.admin_userid }}', '{{ us.admin_usertype }}')">View Permisson</a>
+                                </td>
+                            </tr>                            
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </form>
+                <div class="padding-10"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" role="dialog" aria-labelledby="gridSystemModalLabel" id="divshusrdet">
+    	<div class="modal-dialog" role="document">
+        	<div class="modal-content">
+            	<div class="modal-header">
+                	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="gridSystemModalLabel">Create New - User</h4>
+				</div>
+                <div class="modal-body">
+                	<div class="container-fluid">
+                    	<form id="frmcrtnewuser" name="frmcrtnewuser" action="/wai_crtuser/" method="post">
+                            {% csrf_token %}
+                                <div class="row">
+                                    <label class="col-lg-4 padding-top10 align-right">Name</label>
+                                    <div class="col-lg-5">
+                                        <input type="text" id="txcrtusname" name="txcrtusname" class="form-control" value="" />
+                                    </div>
+                                </div>
+                                <div class="padding-5"></div>
+                                <div class="row">
+                                    <label class="col-lg-4 padding-top10 align-right">User Name (e-Mail ID)</label>
+                                    <div class="col-lg-5">
+                                        <input type="text" id="txtcrtusemailid" name="txtcrtusemailid" class="form-control" value="" onblur="doChkUserIDNaExt(2);" />
+                                    </div>
+                                </div>
+                                <div class="padding-5"></div>
+                                <div class="row">
+                                    <label class="col-lg-4 padding-top10 align-right">Active</label>
+                                    <div class="col-lg-5">
+                                        <select id="ddlcrtusactive" name="ddlcrtusactive" class="form-control">
+                                        	<option value="">-- Select --</option>
+                                            <option value="Y" selected="selected">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="padding-5"></div>
+                                <div class="row">
+                                    <label class="col-lg-4 padding-top10 align-right">User Role</label>
+                                    <div class="col-lg-5">
+                                        <select id="ddlcrtustype" name="ddlcrtustype" class="form-control">
+                                        	<option value="">-- Select --</option>
+                                            <option value="A">Admin</option>
+                                            <option value="U">Standard User</option>
+                                            <option value="SA">Super Admin</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="padding-5"></div>
+                                <div class="row">
+                                    <label class="col-lg-4 padding-top10 align-left">Page Permission</label>
+                                    <div class="col-lg-8 align-right">
+                                        <a href="javascript:void(0);" onclick="return doselall(1);">Select All</a> | <a href="javascript:void(0);" onclick="return doselall(2);">Unselect All</a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                    	<div style="max-height: 300px; overflow: auto">
+                                        <table cellpadding="0" cellspacing="0" width="100%" class="table table-striped table-bordered table-hover">
+                                        	<thead>
+                                            	<tr>
+                                                	<th>Module Name</th>
+                                                    <th class="align-center">Read</th>
+                                                    <th class="align-center">Write</th>
+                                                </tr>
+                                            </thead>
+                                        	<tbody>
+                                            	<tr>
+                                                	<td>
+                                                    	Validation Master
+                                                    	<select id="ddlpagename" name="ddlpagename" class="form-control hide">
+                                                            <option value="">-- Select --</option>
+                                                            <option value="wai_mngvalmas" selected="selected">Validation Master</option>
+                                                            <option value="wai_mngprojob">Manage Project / Jobs</option>
+                                                            <option value="wai_mngprocmoni">Process Monitoring</option>
+                                                            <option value="wai_mngcliven">Manage Client / Venue</option>
+                                                            <option value="wai_mngadmuser">Manage Users</option>
+                                                        </select>
+                                                    </td>
+                                                    <td class="align-center"><input type="checkbox" id="chkview" name="chkview" /><input type="hidden" id="hidview" name="hidview" /></td>
+                                                    <td class="align-center"><input type="checkbox" id="chkedit" name="chkedit" /><input type="hidden" id="hidedit" name="hidedit" /></td>
+                                                </tr>
+                                                <tr>
+                                                	<td>
+                                                    	Manage Project / Jobs
+                                                    	<select id="ddlpagename" name="ddlpagename" class="form-control hide">
+                                                            <option value="">-- Select --</option>
+                                                            <option value="wai_mngvalmas">Validation Master</option>
+                                                            <option value="wai_mngprojob" selected="selected">Manage Project / Jobs</option>
+                                                            <option value="wai_mngprocmoni">Process Monitoring</option>
+                                                            <option value="wai_mngcliven">Manage Client / Venue</option>
+                                                            <option value="wai_mngadmuser">Manage Users</option>
+                                                        </select>
+                                                    </td>
+                                                    <td class="align-center"><input type="checkbox" id="chkview" name="chkview" /><input type="hidden" id="hidview" name="hidview" /></td>
+                                                    <td class="align-center"><input type="checkbox" id="chkedit" name="chkedit" /><input type="hidden" id="hidedit" name="hidedit" /></td>
+                                                </tr>
+                                                <tr>
+                                                	<td>
+                                                    	Process Monitoring
+                                                    	<select id="ddlpagename" name="ddlpagename" class="form-control hide">
+                                                            <option value="">-- Select --</option>
+                                                            <option value="wai_mngvalmas">Validation Master</option>
+                                                            <option value="wai_mngprojob">Manage Project / Jobs</option>
+                                                            <option value="wai_mngprocmoni" selected="selected">Process Monitoring</option>
+                                                            <option value="wai_mngcliven">Manage Client / Venue</option>
+                                                            <option value="wai_mngadmuser">Manage Users</option>
+                                                        </select>
+                                                    </td>
+                                                    <td class="align-center"><input type="checkbox" id="chkview" name="chkview" /><input type="hidden" id="hidview" name="hidview" /></td>
+                                                    <td class="align-center"><input type="checkbox" id="chkedit" name="chkedit" /><input type="hidden" id="hidedit" name="hidedit" /></td>
+                                                </tr>
+                                                <tr>
+                                                	<td>
+                                                    	Manage Client / Venue
+                                                    	<select id="ddlpagename" name="ddlpagename" class="form-control hide">
+                                                            <option value="">-- Select --</option>
+                                                            <option value="wai_mngvalmas">Validation Master</option>
+                                                            <option value="wai_mngprojob">Manage Project / Jobs</option>
+                                                            <option value="wai_mngprocmoni">Process Monitoring</option>
+                                                            <option value="wai_mngcliven" selected="selected">Manage Client / Venue</option>
+                                                            <option value="wai_mngadmuser">Manage Users</option>
+                                                        </select>
+                                                    </td>
+                                                    <td class="align-center"><input type="checkbox" id="chkview" name="chkview" /><input type="hidden" id="hidview" name="hidview" /></td>
+                                                    <td class="align-center"><input type="checkbox" id="chkedit" name="chkedit" /><input type="hidden" id="hidedit" name="hidedit" /></td>
+                                                </tr>
+                                                <tr>
+                                                	<td>
+                                                    	Manage Users
+                                                    	<select id="ddlpagename" name="ddlpagename" class="form-control hide">
+                                                            <option value="">-- Select --</option>
+                                                            <option value="wai_mngvalmas">Validation Master</option>
+                                                            <option value="wai_mngprojob">Manage Project / Jobs</option>
+                                                            <option value="wai_mngprocmoni">Process Monitoring</option>
+                                                            <option value="wai_mngcliven">Manage Client / Venue</option>
+                                                            <option value="wai_mngadmuser" selected="selected">Manage Users</option>
+                                                        </select>
+                                                    </td>
+                                                    <td class="align-center"><input type="checkbox" id="chkview" name="chkview" /><input type="hidden" id="hidview" name="hidview" /></td>
+                                                    <td class="align-center"><input type="checkbox" id="chkedit" name="chkedit" /><input type="hidden" id="hidedit" name="hidedit" /></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                    </div>
+				</div>
+                <div class="modal-footer">
+                	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="return doSaveCrtUsr()">Save changes</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+    <div class="modal fade" role="dialog" aria-labelledby="gridSystemModalLabel" id="divshusrpermis">
+    	<div class="modal-dialog" role="document">
+        	<div class="modal-content">
+            	<div class="modal-header">
+                	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="gridSystemModalLabel">User Permission - Update</h4>
+				</div>
+                <div class="modal-body">
+                	<div class="container-fluid">
+                    	<form id="frmusrpermission" name="frmusrpermission" action="/wai_usrupdperms/" method="post">
+                            {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                    	<div style="max-height: 300px; overflow: auto" id="divedpermis">
+                                        
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                    </div>
+				</div>
+                <div class="modal-footer">
+                	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="return doSaveUpdPerm()">Save changes</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div>
+    
+    <script language="javascript">
+		$(document).ready(function() {		
+			$('#tblusrdet').dataTable(
+				{
+					"lengthMenu": [[50, 100, 150, 200, -1], [50, 100, 150, 200, "All"]],
+					"order": [[ 0, "asc" ]],
+					"aoColumns": [
+							  null,
+							  null,
+							  null,
+							  { "bSortable": false },
+							  null,
+							  null,
+							  { "bSortable": false },
+ 							 ]
+				}
+			);
+		});		
+    </script>
+{% endblock %}

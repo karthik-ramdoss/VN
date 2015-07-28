@@ -1,0 +1,281 @@
+{% extends "wai_base.html" %}
+{% load staticfiles %}
+{% block title %}
+	<title>:: Wisdom Admin Interface :: - Validation Master</title>
+{% endblock %}
+{% block script %}
+	<script language='javascript'>
+        	function doCancel()
+			{
+				document.location.href='../wai_mngvalmas';
+			}
+			function doSaveMasVal()
+			{
+				if(trimAllSpace(document.getElementById("txtprojid").value) == "")
+				{
+					alert("Please select the project name");
+					document.getElementById("txtprojid").focus()
+					return false;
+				}
+				/*if(trimAllSpace(document.getElementById("txtmasid").value) == "")
+				{
+					alert("Please enter the validation id");
+					document.getElementById("txtmasid").focus()
+					return false;
+				}*/
+				if(trimAllSpace(document.getElementById("txtdesc").value) == "")
+				{
+					alert("Please enter the description");
+					document.getElementById("txtdesc").focus()
+					return false;
+				}
+				if(trimAllSpace(document.getElementById("txtassoenty").value) == "")
+				{
+					alert("Please enter the associate entity");
+					document.getElementById("txtassoenty").focus()
+					return false;
+				}
+				if(trimAllSpace(document.getElementById("txtthersval").value) == "")
+				{
+					alert("Please enter the threshold value");
+					document.getElementById("txtthersval").focus()
+					return false;
+				}
+				/*if(trimAllSpace(document.getElementById("txtthersval").value) != "")
+				{
+					if(!IsNumeric(document.getElementById("txtthersval").value))
+					{
+						alert("Please enter the only numbers for threshold value");
+						document.getElementById("txtthersval").value = "";
+						document.getElementById("txtthersval").focus();
+						return false;
+					}
+				}*/
+				// txtcode, txtdesc, txtassoenty, txtcate, txtthersval, txtstatus, txtprojid, txtpriority, txtactflag, txtvalqry
+				if(trimAllSpace(document.getElementById("txtstatus").value) == "")
+				{
+					alert("Please enter the status");
+					document.getElementById("txtstatus").focus()
+					return false;
+				}
+				/*if(trimAllSpace(document.getElementById("txtstatus").value) != "")
+				{
+					if(!IsNumeric(document.getElementById("txtstatus").value))
+					{
+						alert("Please enter the only numbers for status");
+						document.getElementById("txtstatus").value = "";
+						document.getElementById("txtstatus").focus();
+						return false;
+					}
+				}*/				
+				if(trimAllSpace(document.getElementById("txtstatus").value) != "")
+				{
+					intStatus = (document.getElementById("txtstatus").value * 1)
+					if((intStatus * 1) > (valstatused * 1) || (intStatus * 1) < (valstatusst * 1))
+					{
+						alert("Please enter the status as " + (valstatusst * 1) + " or " + (valstatused * 1));
+						document.getElementById("txtstatus").focus();
+						return false;
+					}
+				}
+				if(trimAllSpace(document.getElementById("txtpriority").value) == "")
+				{
+					alert("Please enter the priority");
+					document.getElementById("txtpriority").focus()
+					return false;
+				}
+				/*if(trimAllSpace(document.getElementById("txtpriority").value) != "")
+				{
+					if(!IsNumeric(document.getElementById("txtpriority").value))
+					{
+						alert("Please enter the only numbers for priority");
+						document.getElementById("txtpriority").value = "";
+						document.getElementById("txtpriority").focus();
+						return false;
+					}
+				}	*/			
+				if(trimAllSpace(document.getElementById("txtpriority").value) != "")
+				{
+					intPriority = (document.getElementById("txtpriority").value * 1)
+					if((intPriority * 1) > (valproied * 1) || (intPriority * 1) < (valproist * 1))
+					{
+						alert("Please enter the priority between " + (valproist * 1) + " to " + (valproied * 1));
+						document.getElementById("txtpriority").focus();
+						return false;
+					}
+				}
+				if(trimAllSpace(document.getElementById("txtactflag").value) == "")
+				{
+					alert("Please select the active");
+					document.getElementById("txtactflag").focus()
+					return false;
+				}
+				if(trimAllSpace(document.getElementById("txtvalqry").value) == "")
+				{
+					alert("Please enter the validation query");
+					document.getElementById("txtvalqry").focus()
+					return false;
+				}
+				return true;
+			}
+			function doGetValMasID()
+			{
+				if(document.getElementById("txtprojid").value == "")
+				{
+					alert("Please select the project");
+					document.getElementById("txtprojid").focus();
+					return false;
+				}
+				else
+				{
+					$('body').append('<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-160"></i></div>');
+					$('body').css("overflow", "hidden");
+					document.getElementById("hidcrtvalmasprjid").value = document.getElementById("txtprojid").value;
+					$.ajax({
+						url : "/wai_valmasidgen/", 
+						type : "POST",
+						data : $('#frmvalmasajax').serialize(),
+						success : function(data) {
+							$('body').css("overflow", "auto");
+							document.getElementById("txtmasid").value = data;
+							document.getElementById("hidcrtvalmasprjid").value = "";
+							$('body').find('.message-loading-overlay').remove();
+							$('body').removeClass("no-scroll");
+						},
+						error : function(xhr,errmsg,err) {
+							alert(xhr.status + ": " + xhr.responseText);
+							$('body').find('.message-loading-overlay').remove();
+							$('body').removeClass("no-scroll");
+						}
+					});
+				}
+			}
+    </script>
+{% endblock %}
+{% block ddlclient %}
+	<select id="ddlheadclie" name="ddlheadclie" class="form-control">    
+	{% for cd in clidet %}
+	   	<option value="{{ cd.pk_client }}">{{ cd.client_name }}</option>
+	{% endfor %}
+    </select>
+{% endblock %}
+{% block ddlvenue %}
+	<select id="ddlheadvenu" name="ddlheadvenu" class="form-control">    
+	{% for vn in vendet %}
+	   	<option value="{{ vn.pk_venue }}">{{ vn.venue_name }}</option>
+	{% endfor %}
+    </select>
+{% endblock %}
+{% block body %}
+<div class="container-fluid">
+	<div class="row">
+    	<div class="col-sm-3 col-md-2 sidebar">
+        	<ul class="nav nav-sidebar">
+           		<li id="livalmas"><a href="../wai_mngvalmas/">Manage Data Validation</a></li>
+                <li id="liprojob"><a href="../wai_mngprojob/">Manage Projects & Jobs</a></li>
+                <li id="licliven"><a href="../wai_mngcliven/">Manage Clients & Venues</a></li>
+                <li id="liadmusr"><a href="../wai_mngadmuser/">Manage Users & Roles</a></li>
+			</ul>
+		</div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 padding-bottom20">
+        	<h1 class="page-header">Manage Data Validation <small class='pull-right'></small></h1>
+        	<input type="hidden" id="hidheadid" name="hidheadid" value="{{ hid }}" />
+            <input type="hidden" id="hidusname" name="hidusname" value="{{ usna }}" />
+            <input type="hidden" id="hidustype" name="hidustype" value="{{ ustyp }}" />
+            {% for pg in pgdet %}
+                <input type="hidden" id="hidpgnames" name="hidpgnames" value="{{ pg.page_name }}" />
+                <input type="hidden" id="hidpgviews" name="hidpgviews" value="{{ pg.page_view }}" />
+                <input type="hidden" id="hidpgedits" name="hidpgedits" value="{{ pg.page_edit }}" />
+                <input type="hidden" id="hidpgdeles" name="hidpgdeles" value="{{ pg.page_delete }}" />
+            {% endfor %}
+            <form id="frmvalmasajax" name="frmvalmasajax" method="post">
+                {% csrf_token %}
+                <input type="hidden" id="hidcrtvalmasprjid" name="hidcrtvalmasprjid" />
+            </form>
+            <form id="frmwisdomvalmast" name="frmwisdomvalmast" action="/createvalmas/?pid={{ projid }}" method="post" onsubmit="return doSaveMasVal();">
+                {% csrf_token %}
+                    <div class="row">
+                        <label class="col-lg-2 padding-top10 align-right">Project Name</label>
+                        <div class="col-lg-5">
+            <!-- onchange="return doGetValMasID()" -->
+                            <select id="txtprojid" name="txtprojid" class="form-control">
+                                <option value="">Select</option>
+                                {% for pd in projdet %}
+                                <option value="{{ pd.project_id }}">{{ pd.project_name }} ({{ pd.project_id }})</option>
+                                {% endfor %}
+                            </select>
+                            <input type="text" id="txtmasid" name="txtmasid" class="form-control hide" readonly="readonly" value="{{ mid }}" />
+                        </div>
+                    </div>
+                    <div class="padding-5"></div>
+                    <div class="row">
+                        <label class="col-lg-2 padding-top10 align-right">Description</label>
+                        <div class="col-lg-5">
+                            <textarea id="txtdesc" name="txtdesc" rows="6" style="resize:vertical;" class="form-control" maxlength="255"></textarea>
+                        </div>
+                    </div>
+                    <div class="padding-5"></div>
+                    <div class="row">
+                        <label class="col-lg-2 padding-top10 align-right">Object (Associated Entity)</label>
+                        <div class="col-lg-5">
+                            <input type="text" id="txtassoenty" name="txtassoenty" class="form-control" value="" maxlength="50" />
+                        </div>
+                    </div>
+                    <div class="padding-5"></div>
+                    <div class="row">
+                        <label class="col-lg-2 padding-top10 align-right">Threshold Value</label>
+                        <div class="col-lg-5">
+                            <input type="text" id="txtthersval" name="txtthersval" class="form-control" value="" onkeypress="return IsNumeric(event);" ondrop="return false;" onpaste="return false;" maxlength="6" />
+                        </div>
+                    </div>
+                    <div class="padding-5"></div>
+                    <div class="row">
+                        <label class="col-lg-2 padding-top10 align-right">Status <a href="#" data-toggle="tooltip" title="Please enter the status as 0 or 1"><i class="glyphicon glyphicon-question-sign bigger-110"></i></a></label>
+                        <div class="col-lg-5">
+                            <input type="text" id="txtstatus" name="txtstatus" class="form-control" value="" onkeypress="return IsNumeric(event);" ondrop="return false;" onpaste="return false;"  maxlength="3" />
+                        </div>
+                    </div>
+                    <div class="padding-5"></div>
+                    <div class="row">
+                        <label class="col-lg-2 padding-top10 align-right">Priority <a href="#" data-toggle="tooltip" title="Please enter the priority between 0 - 1"><i class="glyphicon glyphicon-question-sign bigger-110"></i></a></label>
+                        <div class="col-lg-5">
+                            <input type="text" id="txtpriority" name="txtpriority" class="form-control" value="" onkeypress="return IsNumeric(event);" ondrop="return false;" onpaste="return false;"  maxlength="3" />
+                        </div>
+                    </div>
+                    <div class="padding-5"></div>
+                    <div class="row">
+                        <label class="col-lg-2 padding-top10 align-right">Active <a href="#" data-toggle="tooltip" title="Please select the active"><i class="glyphicon glyphicon-question-sign bigger-110"></i></a></label>
+                        <div class="col-lg-5">
+                            <select id="txtactflag" name="txtactflag" class="form-control">
+                                <option value="">Select</option>
+                                <option value="Y">Y</option>
+                                <option value="N">N</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="padding-5"></div>
+                    <div class="row">
+                        <label class="col-lg-2 padding-top10 align-right">Validation Query <a href="#" data-toggle="tooltip" title="Please enter the validation query"><i class="glyphicon glyphicon-question-sign bigger-110"></i></a></label>
+                        <div class="col-lg-5">
+                            <textarea id="txtvalqry" style="resize:vertical;" rows="6" name="txtvalqry" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="padding-15"></div>
+                    <div class="row">
+                        <div class="col-lg-7 align-right">
+                            <input type="button" id="btnCancel" name="btnCancel" class="btn btn-default" Value="Cancel" onClick="doCancel();" />
+                            <input type="submit" id="btnSave" name="btnSave" class="btn btn-primary" Value="Save" />
+                            <input type="reset" id="btnReset" name="btnReset" class="btn btn-primary hide" Value="Reset" />
+                        </div>
+                    </div>
+                </form>
+		</div>
+	</div>
+</div>
+    <script language="javascript">
+		{% if projid != "" or projid != "None" %}
+			document.getElementById("txtprojid").value = "{{ projid }}";
+			//document.getElementById("txtprojid").disabled = true;
+		{% endif %}
+    </script>
+{% endblock %}

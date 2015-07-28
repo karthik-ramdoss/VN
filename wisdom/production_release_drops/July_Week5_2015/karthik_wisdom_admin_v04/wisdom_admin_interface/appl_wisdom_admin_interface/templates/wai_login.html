@@ -1,0 +1,74 @@
+{% block content %}
+{% load staticfiles %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>:: Login ::</title>
+        <link href="{% static "css/bootstrap.css" %}" rel="stylesheet" />
+        <link href="{% static "css/style.css" %}" rel="stylesheet" />
+        <script language="javascript" src="{% static "js/common.js" %}"></script>
+	</head>
+	<body>
+	    <div class="main">
+    		<div class="container padding-top5 padding-bottom5">
+            	<div class="row">
+                	<div class="col-lg-3"><img src="{% static "images/VN-Logo.png" %}" class="img-responsive" alt="VenueNext"></div>
+                    <div class="col-lg-9"></div>
+                </div>
+            </div>
+            <div class="br-red">
+                <div class="container padding-top40 padding-bottom50">
+                	<div class="row">
+                    	<div class="col-lg-4"></div>
+                        <div class="col-lg-4">
+                        	<h1 class="white">Login</h1>
+                        	<form id="frmlogin" name="frmlogin" action="/wai_login/" method="post" onsubmit="return doLogin();">
+				{% csrf_token %}
+				<div class="form-group">
+					<label class="white"> {{ errmsg }} </label>
+                                </div>
+                            	<div class="form-group">
+                                	<label></label>
+                                  	<input type="text" id="txtusname" name="txtusname" value="" placeholder="Enter Username" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                	<label></label>
+                                  	<input type="password" id="txtuspwd" name="txtuspwd" value="" placeholder="Enter Password"  class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                <input type="submit" value="Sign-In" id="btnsignin" name="btnsignin" class="btn btn-success" />&nbsp;&nbsp;&nbsp;&nbsp;<input type="reset" value="Cancel" id="btncanc" name="btncanc" class="btn btn-default" /> <a href="/wai_forgot/" class='btn btn-link white pull-right'>Forgot Password?</a>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-lg-4"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="container padding-20 text-center">
+            	VENUENEXT IS BASED IN SAN FRANCISCO, SILICON VALLEY AND NEW YORK.
+            </div>
+    	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script src="{% static "js/bootstrap.js" %}"></script>
+	<script language="javascript">
+		function doLogin()
+		{
+			if(trimAllSpace(document.getElementById("txtusname").value) == "")
+			{
+				alert("Please enter the username");
+				document.getElementById("txtusname").focus();
+				return false;
+			}
+			if(trimAllSpace(document.getElementById("txtuspwd").value) == "")
+			{
+					alert("Please enter the password");
+					document.getElementById("txtuspwd").focus();
+					return false;
+			}
+			return true;
+		}
+	</script>
+	</body>
+</html>
+{% endblock %}	

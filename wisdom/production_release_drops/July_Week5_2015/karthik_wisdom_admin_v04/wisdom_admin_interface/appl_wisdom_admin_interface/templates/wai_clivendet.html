@@ -1,0 +1,523 @@
+{% extends "wai_base.html" %}
+{% block title %}
+	<title>:: Wisdom Admin Interface :: - Client & Venue</title>
+{% endblock %}
+{% block script %}
+<script>
+	var ClieFields = "venuname,venudesc,venuaddr,venucity,venucount,venucur,venureptz,venuorgna,venuuuid";
+	function doVenueEdit(clieid)
+	{
+		ArrFields = ClieFields.split(",");
+		for(i=0;i<ArrFields.length;i++)
+		{
+			lblJob = "#lbl" + ArrFields[i] + clieid;
+			TxtJob = "#txt" + ArrFields[i] + clieid;
+			$(lblJob).addClass("hide");
+			$(TxtJob).removeClass("hide");
+		}
+		
+		$("#btnCreVenu").addClass("hide");
+		$("#btnupdven,#btncanven").removeClass("hide");
+	}
+	
+	function doUpdateVenue()
+	{
+		/* hidvenuid, txtvenuname, txtvenudesc, txtvenuaddr, txtvenucity, txtvenucount, txtvenucur, txtvenureptz, txtvenuorgna, txtvenuuuid */
+		
+		arrObjTxtNa = document.getElementsByName("txtvenuname");
+		arrObjTxtDes = document.getElementsByName("txtvenudesc");
+		arrObjTxtAdr = document.getElementsByName("txtvenuaddr");
+		arrObjTxtCit = document.getElementsByName("txtvenucity");
+		arrObjTxtCot = document.getElementsByName("txtvenucount");
+		arrObjTxtCur = document.getElementsByName("txtvenucur");
+		arrObjTxtReTz = document.getElementsByName("txtvenureptz");
+		arrObjTxtOrg = document.getElementsByName("txtvenuorgna");
+		arrObjTxtUui = document.getElementsByName("txtvenuuuid");
+		
+		for(i = 0; i < arrObjTxtNa.length; i++)
+		{
+			if(trimAllSpace(arrObjTxtNa[i].value) == "")
+			{
+				alert("Please enter the venue name");
+				arrObjTxtNa[i].focus();
+				return false;
+			}
+			if(trimAllSpace(arrObjTxtDes[i].value) == "")
+			{
+				alert("Please enter the venue description");
+				arrObjTxtDes[i].focus();
+				return false;
+			}
+			/*if(trimAllSpace(arrObjTxtAdr[i].value) == "")
+			{
+				alert("Please enter the venue address");
+				arrObjTxtAdr[i].focus();
+				return false;
+			}
+			if(trimAllSpace(arrObjTxtCit[i].value) == "")
+			{
+				alert("Please enter the venue city");
+				arrObjTxtCit[i].focus();
+				return false;
+			}
+			
+			if(trimAllSpace(arrObjTxtCot[i].value) == "")
+			{
+				alert("Please enter the venue country");
+				arrObjTxtCot[i].focus();
+				return false;
+			}*/
+			if(trimAllSpace(arrObjTxtCur[i].value) == "")
+			{
+				alert("Please enter the venue currency");
+				arrObjTxtCur[i].focus();
+				return false;
+			}
+			if(trimAllSpace(arrObjTxtReTz[i].value) == "")
+			{
+				alert("Please enter the venue report timezone");
+				arrObjTxtReTz[i].focus();
+				return false;
+			}
+			if(trimAllSpace(arrObjTxtOrg[i].value) == "")
+			{
+				alert("Please enter the organization name");
+				arrObjTxtOrg[i].focus();
+				return false;
+			}
+			if(trimAllSpace(arrObjTxtUui[i].value) == "")
+			{
+				alert("Please enter the venue uuid");
+				arrObjTxtUui[i].focus();
+				return false;
+			}
+		}
+		
+		$('body').append('<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-270"></i></div>');
+		$('body').css("overflow", "hidden");
+		document.frmvendet.submit();
+	}
+	function doCreNewVenue()
+	{
+		/*	txtcrtvenuid, txtcrtvenuname, txtcrtvenudesc, txtcrtvenuaddr, txtcrtvenucity, txtcrtvenucount, txtcrtvenucur, txtcrtvenureptz, txtcrtvenuorg, txtcrtvenuuid	*/		
+		if(trimAllSpace(document.getElementById("txtcrtvenuid").value) == ""){
+			alert("Please enter the venue id.");
+			document.getElementById("txtcrtvenuid").focus();
+			return false;
+		}
+		if(trimAllSpace(document.getElementById("txtcrtvenuname").value) == ""){
+			alert("Please enter the venue name.");
+			document.getElementById("txtcrtvenuname").focus();
+			return false;
+		}
+		if(trimAllSpace(document.getElementById("txtcrtvenudesc").value) == ""){
+			alert("Please enter the venue description.");
+			document.getElementById("txtcrtvenudesc").focus();
+			return false;
+		}
+		if(trimAllSpace(document.getElementById("txtcrtvenuaddr").value) == ""){
+			alert("Please enter the address.");
+			document.getElementById("txtcrtvenuaddr").focus();
+			return false;
+		}
+		if(trimAllSpace(document.getElementById("txtcrtvenucity").value) == ""){
+			alert("Please enter the city.");
+			document.getElementById("txtcrtvenucity").focus();
+			return false;
+		}
+		if(trimAllSpace(document.getElementById("txtcrtvenucount").value) == ""){
+			alert("Please enter the country.");
+			document.getElementById("txtcrtvenucount").focus();
+			return false;
+		}
+		if(trimAllSpace(document.getElementById("txtcrtvenucur").value) == ""){
+			alert("Please enter the currency.");
+			document.getElementById("txtcrtvenucur").focus();
+			return false;
+		}		
+		if(trimAllSpace(document.getElementById("txtcrtvenureptz").value) == ""){
+			alert("Please enter the report time zone.");
+			document.getElementById("txtcrtvenureptz").focus();
+			return false;
+		}
+		if(trimAllSpace(document.getElementById("txtcrtvenuorg").value) == ""){
+			alert("Please enter the organization name.");
+			document.getElementById("txtcrtvenuorg").focus();
+			return false;
+		}
+		if(trimAllSpace(document.getElementById("txtcrtvenuuid").value) == ""){
+			alert("Please enter the venu uuid.");
+			document.getElementById("txtcrtvenuuid").focus();
+			return false;
+		}
+		
+		$('body').append('<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-270"></i></div>');
+		$('body').css("overflow", "hidden");
+		document.frmcrtnewvenu.submit();
+	}
+	
+	function doChkVenueID()
+	{
+		if(trimAllSpace(document.getElementById("txtcrtvenuid").value) != "")
+		{
+			$('.modal-body').append('<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-160"></i></div>');
+			var myKeyVals = { venueid: document.getElementById("txtcrtvenuid").value, csrfmiddlewaretoken:'{{csrf_token}}'  }
+			$.ajax({
+				url : "/wai_ext_venueid_name/", 
+				type : "POST",
+				data : myKeyVals,
+				success : function(data) {
+					setTimeout(function() {
+						$('.modal-body').find('.message-loading-overlay').remove();
+						if((data * 1) > 0){
+							alert("Venue ID already exists.");
+							$("#txtcrtvenuid").val('').focus();
+						}
+						else
+							$("#txtcrtvenuname").focus();
+					}, 500 + parseInt(Math.random() * 500));
+				},
+				error : function(xhr,errmsg,err) {
+					$('.modal-body').find('.message-loading-overlay').remove();
+					alert(xhr.status + ": " + xhr.responseText);
+				}
+			});
+		}
+	}
+	
+	function doChkVenueName()
+	{
+		if(trimAllSpace(document.getElementById("txtcrtvenuname").value) != "")
+		{
+			//document.getElementById("txtcrtvenuname").value = document.getElementById("v").value.toUpperCase();
+			$('.modal-body').append('<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-160"></i></div>');
+			var myKeyVals = { venuename: document.getElementById("txtcrtvenuname").value, csrfmiddlewaretoken:'{{csrf_token}}'  }
+			$.ajax({
+				url : "/wai_ext_venueid_name/", 
+				type : "POST",
+				data : myKeyVals,
+				success : function(data) {
+					setTimeout(function() {
+						$('.modal-body').find('.message-loading-overlay').remove();
+						if((data * 1) > 0){
+							alert("Venue name already exists.");
+							$("#txtcrtvenuname").val('').focus();
+						}
+						else
+							$("#txtcrtvenudesc").focus();
+					}, 500 + parseInt(Math.random() * 500));
+					return false;
+				},
+				error : function(xhr,errmsg,err) {
+					$('.modal-body').find('.message-loading-overlay').remove();
+					alert(xhr.status + ": " + xhr.responseText);
+				}
+			});
+		}
+	}
+	
+	function doChkUpdVenIdNa(venuid)
+	{
+		objVenNa = "txtvenuname" + venuid		
+		if(trimAllSpace(document.getElementById(objVenNa).value) != "")
+		{
+			objVenDesc = "txtvenudesc" + venuid;
+			$('body').append('<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-160"></i></div>');
+			var myKeyVals = { venueid: venuid, venuename: document.getElementById(objVenNa).value, csrfmiddlewaretoken:'{{csrf_token}}'  }
+			$.ajax({
+				url : "/wai_extupdvenidna/", 
+				type : "POST",
+				data : myKeyVals,
+				success : function(data) {
+					setTimeout(function() {
+						$('body').find('.message-loading-overlay').remove();
+						if((data * 1) > 0){
+							alert("Venue name already exists.");
+							$("#" + objVenNa).val('').focus();
+						}
+						else
+							$("#" + objVenDesc).focus();
+					}, 500 + parseInt(Math.random() * 500));
+					return false;
+				},
+				error : function(xhr,errmsg,err) {
+					$('body').find('.message-loading-overlay').remove();
+					alert(xhr.status + ": " + xhr.responseText);
+				}
+			});
+		}
+	}	
+	//wai_extupdvenidna venueid, venuename
+	
+</script>
+{% endblock %}
+{% block ddlclient %}
+	<select id="ddlheadclie" name="ddlheadclie" class="form-control">    
+	{% for cd in clidet %}
+	   	<option value="{{ cd.pk_client }}">{{ cd.client_name }}</option>
+	{% endfor %}
+    </select>
+{% endblock %}
+{% block ddlvenue %}
+	<select id="ddlheadvenu" name="ddlheadvenu" class="form-control">    
+	{% for vn in vendet %}
+	   	<option value="{{ vn.pk_venue }}">{{ vn.venue_name }}</option>
+	{% endfor %}
+    </select>
+{% endblock %}
+{% block body %}
+<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-270"></i></div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul class="nav nav-sidebar">
+                    <li id="livalmas"><a href="../wai_mngvalmas/">Manage Data Validation</a></li>
+                    <li id="liprojob"><a href="../wai_mngprojob/">Manage Projects & Jobs</a></li>
+                    <li id="licliven"><a href="../wai_mngcliven/">Manage Clients & Venues</a></li>
+                    <li id="liadmusr"><a href="../wai_mngadmuser/">Manage Users & Roles</a></li>
+                </ul>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 padding-bottom20">
+                <h1 class="page-header">
+                    Manage Clients & Venues
+                    <small class='pull-right'>
+                        <a href="/wai_mngcliven/" class="btn btn-default">Back to all Clients</a>
+                    </small>
+                </h1>
+                <input type="hidden" id="hidheadid" name="hidheadid" value="{{ hid }}" />
+               	<input type="hidden" id="hidusname" name="hidusname" value="{{ usna }}" />
+                <input type="hidden" id="hidustype" name="hidustype" value="{{ ustyp }}" />
+                {% for pg in pgdet %}
+                	<input type="hidden" id="hidpgnames" name="hidpgnames" value="{{ pg.page_name }}" />
+	            	<input type="hidden" id="hidpgviews" name="hidpgviews" value="{{ pg.page_view }}" />
+                	<input type="hidden" id="hidpgedits" name="hidpgedits" value="{{ pg.page_edit }}" />
+                    <input type="hidden" id="hidpgdeles" name="hidpgdeles" value="{{ pg.page_delete }}" />
+                {% endfor %}
+                <form id="frmclidet" name="frmclidet" action="/wai_mngcliven/" method="post">
+                {% csrf_token %}
+                    <table cellpadding="2" cellspacing="0" width="100%" class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th style="width:80px;" class="align-center">Client ID</th>
+                                <th style="width:150px;" class="align-center">Client Name</th>
+                                <th style="width:180px;" class="align-center">Address</th>
+                                <th style="width:100px;" class="align-center">City</th>
+                                <th style="width:150px;" class="align-center">State</th>
+                                <th style="width:180px;" class="align-center">Country</th>
+                                <th class="align-center">Currency</th>
+                                <th class="align-center">Report Time Zone</th>
+                                <th class="align-center">Source Time Zone</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="max-width:80px;" class="align-left">
+                                    <a href="/wai_clivendet/?cid={{ clientid }}">{{ clientid }}</a>
+                                    <input type="hidden" id="hidedclieid" name="hidedclieid" value="{{ clientid }}" />
+                                </td>
+                                <td style="max-width:150px;" class="align-left">
+                                    <span id="lblcliname">{{ cliname }}</span>
+                                </td>
+                                <td class="align-left wrapword">
+                                    <span id="lblcliaddr">{{ cliaddress }}</span>
+                                </td>
+                                <td style="max-width:100px;" class="align-left">
+                                    <span id="lblclicity">{{ clicity }}</span>
+                                </td>
+                                
+                                <td style="max-width:120px;" class="align-left wrapword">
+                                    <span id="lblclista">{{ clistate}}</span>
+                                </td>
+                                <td class="align-left">
+                                    <span id="lblclicountry">{{ clicountry }}</span>
+                                </td>
+                                <td class="align-left">
+                                    <span id="lblclicurr">{{ clicurrency }}</span>
+                                </td>
+                                <td class="align-left">
+                                    <span id="lblclireptz">{{ clireptz }}</span>
+                                </td>
+                                <td class="wrapword align-left">
+                                    <span id="lblclisourtz">{{ clisotz }}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+                <h1 class="page-header">
+                    Venue Details
+                    <small class='pull-right'>
+                        <button class="btn btn-success" id="btnCreVenu" data-toggle="modal" data-target="#popcrevendet" data-keyboard="false" data-backdrop="static">Create Venue</button>
+						<a href="javascript:void(0);" onclick="doUpdateVenue()" class="btn btn-primary hide" id="btnupdven">Update</a>
+                        <a href="{{request.get_full_path}}" class="btn btn-danger hide" id="btncanven">Cancel</a>
+                    </small>
+				</h1>
+                <form id="frmvendet" name="frmvendet" action="/wai_clivendet/?cid={{ clientid }}" method="post">
+                {% csrf_token %}
+                    <table cellpadding="2" cellspacing="0" width="100%" id="tblvenuedet" class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th style="width:65px;" class="align-center">Venue ID</th>
+                                <th style="width:150px;" class="align-center">Venue Name</th>
+                                <th class="align-center">Description</th>
+                                <th style="width:150px;">Address</th>
+                                <th style="width:70px;" class="align-center">City</th>
+                                <th style="width:70px;" class="align-center">Country</th>
+                                <th class="align-center">Venue Currency</th>
+                                <th style="width:100px;" class="align-center">Report TimeZone</th>
+                                <th style="width:95px;" class="align-center">Organization Name</th>
+                                <th class="align-center">Venue uuid</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for vd in venuedet %}
+                            <tr>
+                                <td style="max-width:65px;" class="align-left">{{ vd.pk_venue }} </td>
+                                <td style="max-width:150px;" class="align-left wrapword" onclick="doVenueEdit('{{ vd.pk_venue }}')">
+                                    <span id="lblvenuname{{ vd.pk_venue }}">{{ vd.venue_name }}</span>
+                                    <input type="text" id="txtvenuname{{ vd.pk_venue }}" name="txtvenuname" value="{{ vd.venue_name }}" class="hide form-control" maxlength="50" onblur="doChkUpdVenIdNa('{{ vd.pk_venue }}')" />
+                                    <input type="hidden" id="hidvenuid{{ vd.pk_venue }}" name="hidvenuid" value="{{ vd.pk_venue }}" />
+                                </td>
+                                <td class="align-left" onclick="doVenueEdit('{{ vd.pk_venue }}')">
+                                	<!-- pk_venue, venue_name, description, address, city, country, createdate, dw_created_by, dw_create_date, dw_updated_by, dw_update_date, jobrun_id, report_timezone, pk_client,venue_currency, organization_name, venue_uuid -->
+                                    <span id="lblvenudesc{{ vd.pk_venue }}">{{ vd.description }}</span>
+                                    <textarea id="txtvenudesc{{ vd.pk_venue }}" name="txtvenudesc" class="hide form-control" rows="3" style="width:200px; resize:none;" maxlength="350">{{ vd.description }}</textarea>
+                                </td>
+                                <td class="align-left" style="width:150px;" onclick="doVenueEdit('{{ vd.pk_venue }}')">
+                                    <span id="lblvenuaddr{{ vd.pk_venue }}">{{ vd.address }}</span>
+                                    <textarea id="txtvenuaddr{{ vd.pk_venue }}" name="txtvenuaddr" class="hide form-control" rows="3" style="resize:none;">{{ vd.address }}</textarea>
+                                </td>
+                                
+                                <td style="max-width:70px;" class="align-left wrapword" onclick="doVenueEdit('{{ vd.pk_venue }}')">
+                                    <span id="lblvenucity{{ vd.pk_venue }}">{{ vd.city }}</span>
+                                    <input type="text" id="txtvenucity{{ vd.pk_venue }}" name="txtvenucity" value="{{ vd.city }}" class="hide form-control" maxlength="50" />
+                                </td>
+                                <td class="align-left" onclick="doVenueEdit('{{ vd.pk_venue }}')">
+                                    <span id="lblvenucount{{ vd.pk_venue }}">{{ vd.country }}</span>
+                                    <input type="text" id="txtvenucount{{ vd.pk_venue }}" name="txtvenucount" value="{{ vd.country }}" class="hide form-control" maxlength="50" />
+                                </td>
+                                <td class="wrapword align-left" onclick="doVenueEdit('{{ vd.pk_venue }}')">
+                                    <span id="lblvenucur{{ vd.pk_venue }}">{{ vd.venue_currency }}</span>
+                                    <input type="text" id="txtvenucur{{ vd.pk_venue }}" name="txtvenucur" value="{{ vd.venue_currency }}" class="hide form-control" maxlength="50" />
+                                </td>
+                                <td class="align-left" onclick="doVenueEdit('{{ vd.pk_venue }}')">
+                                    <span id="lblvenureptz{{ vd.pk_venue }}">{{ vd.report_timezone }}</span>
+                                    <input type="text" id="txtvenureptz{{ vd.pk_venue }}" name="txtvenureptz" value="{{ vd.report_timezone }}" class="hide form-control" maxlength="50" />
+                                </td>
+                                <td class="align-left" onclick="doVenueEdit('{{ vd.pk_venue }}')">
+                                    <span id="lblvenuorgna{{ vd.pk_venue }}">{{ vd.organization_name }}</span>
+                                    <input type="text" id="txtvenuorgna{{ vd.pk_venue }}" name="txtvenuorgna" value="{{ vd.organization_name }}" class="hide form-control" maxlength="50" />
+                                </td>
+                                <td class="align-left" onclick="doVenueEdit('{{ vd.pk_venue }}')">
+                                    <span id="lblvenuuuid{{ vd.pk_venue }}">{{ vd.venue_uuid }}</span>
+                                    <input type="text" id="txtvenuuuid{{ vd.pk_venue }}" name="txtvenuuuid" value="{{ vd.venue_uuid }}" class="hide form-control" maxlength="5" />
+                                </td>
+                            </tr>  
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+<div class="modal fade" role="dialog" aria-labelledby="gridSystemModalLabel" id="popcrevendet">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="gridSystemModalLabel">Create New - Venue</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <form id="frmcrtnewvenu" name="frmcrtnewvenu" action="/wai_insvendet/?cid={{ clientid }}" method="post">
+                        {% csrf_token %}
+                            <div class="row">
+                                <label class="col-lg-4 padding-top10 align-right">Venue ID</label>
+                                <div class="col-lg-4">
+                                    <input type="text" class="form-control" id="txtcrtvenuid" name="txtcrtvenuid" onblur="doChkVenueID();" />
+                                </div>
+                            </div>
+                            <div class="padding-5"></div>
+                            <div class="row">
+                                <label class="col-lg-4 padding-top10 align-right">Venue Name</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" id="txtcrtvenuname" name="txtcrtvenuname" onblur="doChkVenueName();" />
+                                </div>
+                            </div>
+                            <div class="padding-5"></div>
+                            <div class="row">
+                                <label class="col-lg-4 padding-top10 align-right">Description</label>
+                                <div class="col-lg-8">
+                                    <textarea class="form-control" id="txtcrtvenudesc" name="txtcrtvenudesc" style="resize: none" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="padding-5"></div>
+                            <div class="row">
+                                <label class="col-lg-4 padding-top10 align-right">Address</label>
+                                <div class="col-lg-8">
+                                    <textarea class="form-control" id="txtcrtvenuaddr" name="txtcrtvenuaddr" style="resize: none" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="padding-5"></div>
+                            <div class="row">
+                                <label class="col-lg-4 padding-top10 align-right">City</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" id="txtcrtvenucity" name="txtcrtvenucity" />
+                                </div>
+                            </div>
+                            <div class="padding-5"></div>
+                            <div class="row">
+                                <label class="col-lg-4 align-right">Country</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" id="txtcrtvenucount" name="txtcrtvenucount" />
+                                </div>
+                            </div>
+                            <div class="padding-5"></div>
+                            <div class="row">
+                                <label class="col-lg-4 align-right wrapword">Currency</label>
+                                <div class="col-lg-4">
+                                    <input type="text" class="form-control" id="txtcrtvenucur" name="txtcrtvenucur" />
+                                </div>
+                            </div>
+                            <div class="padding-5"></div>
+                            <div class="row">
+                                <label class="col-lg-4 align-right wrapword">Report TimeZone</label>
+                                <div class="col-lg-4">
+                                    <input type="text" class="form-control" id="txtcrtvenureptz" name="txtcrtvenureptz" />
+                                </div>
+                            </div>
+                            <div class="padding-5"></div>
+                            <div class="row">
+                                <label class="col-lg-4 align-right wrapword">Organization Name</label>
+                                <div class="col-lg-8">
+                                    <input type="text" class="form-control" id="txtcrtvenuorg" name="txtcrtvenuorg" />
+                                </div>
+                            </div>
+                            <div class="padding-5"></div>
+                            <div class="row">
+                                <label class="col-lg-4 align-right wrapword">Venue UUID</label>
+                                <div class="col-lg-4">
+                                    <input type="text" class="form-control" id="txtcrtvenuuid" name="txtcrtvenuuid" />
+                                </div>
+                            </div>
+                        </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="doCreNewVenue();">Save</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script language="javascript">
+	$(document).ready(function() {		
+		$('#tblvenuedet').dataTable(
+			{
+				"lengthMenu": [[50, 100, 150, 200, -1], [50, 100, 150, 200, "All"]],
+				"order": [[ 0, "desc" ]]
+			}
+		);
+	});	
+</script>
+{% endblock %}

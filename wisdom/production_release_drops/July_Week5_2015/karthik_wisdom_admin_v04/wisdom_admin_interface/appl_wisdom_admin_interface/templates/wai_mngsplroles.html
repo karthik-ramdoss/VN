@@ -1,0 +1,139 @@
+{% extends "wai_base.html" %}
+{% load staticfiles %}
+{% block title %}
+	<title>:: Wisdom Admin Interface :: - Validation Master</title>
+{% endblock %}
+{% block script %}
+<script>
+	function doSubsplcrtrole(){
+		if($("#client_name").val() == ""){
+			alert("Please enter the client name.");
+			$("#client_name").val('').focus();
+			return false;
+		}
+		if($("#venue_name").val() == ""){
+			alert("Please enter the venue name.");
+			$("#venue_name").val('').focus();
+			return false;
+		}
+		if($("#imported_roles").val() == ""){
+			alert("Please enter the imported roles.");
+			$("#imported_roles").val('').focus();
+			return false;
+		}
+		return true;
+	}
+</script>
+{% endblock %}
+{% block ddlclient %}
+	<select id="ddlheadclie" name="ddlheadclie" class="form-control">    
+	{% for cd in clidet %}
+    	{% if request.session.clientid == cd.pk_client %}
+	   	<option value="{{ cd.pk_client }}" selected="selected">{{ cd.client_name }}</option>
+        {% else %}
+        <option value="{{ cd.pk_client }}">{{ cd.client_name }}</option>
+        {% endif %}
+	{% endfor %}
+    </select>
+{% endblock %}
+{% block ddlvenue %}
+	<select id="ddlheadvenu" name="ddlheadvenu" class="form-control">    
+	{% for vn in vendet %}
+    	{% if request.session.venueid == vn.pk_venue %}
+	   	<option value="{{ vn.pk_venue }}" selected="selected">{{ vn.venue_name }}</option>
+        {% else %}
+        <option value="{{ vn.pk_venue }}">{{ vn.venue_name }}</option>
+        {% endif %}
+	{% endfor %}
+    </select>
+{% endblock %}
+{% block body %}
+<div class="message-loading-overlay"><i class="ace-icon fa fa-spin ace-icon fa fa-spinner orange2 bigger-270"></i></div>   
+<div class="container-fluid">
+	<div class="row">
+    	<div class="col-sm-3 col-md-2 sidebar">
+        	<ul class="nav nav-sidebar">
+           		<li id="lisplusr"><a href="../wai_mngsplcrtusr/">Create Splunk Users</a></li>
+                <li id="lisplrol"><a href="../wai_mngsplcrtrol/">Create Splunk Roles</a></li>
+			</ul>
+		</div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 padding-bottom20">
+        	<h1 class="page-header">Create Splunk Roles<small class='pull-right'></small></h1>
+            <input type="hidden" id="hidheadid" name="hidheadid" value="{{ hid }}" />
+            <input type="hidden" id="hidusname" name="hidusname" value="{{ usna }}" />
+            <input type="hidden" id="hidustype" name="hidustype" value="{{ ustyp }}" />
+            {% for pg in pgdet %}
+                <input type="hidden" id="hidpgnames" name="hidpgnames" value="{{ pg.page_name }}" />
+                <input type="hidden" id="hidpgviews" name="hidpgviews" value="{{ pg.page_view }}" />
+                <input type="hidden" id="hidpgedits" name="hidpgedits" value="{{ pg.page_edit }}" />
+                <input type="hidden" id="hidpgdeles" name="hidpgdeles" value="{{ pg.page_delete }}" />
+            {% endfor %}
+            <form class="form-horizontal" role="form" action="/submit_role/" onsubmit="return doSubsplcrtrole();" method="get">
+            	<fieldset>
+                    <!-- Text Input -->
+                    <div class="control-group">
+                        <div class="col-xs-3">
+                            <label class="control-label" for="client_name">Client Name</label>
+                            <input type="text" class="form-control" name="client_name" id="client_name" placeholder="Enter Client Name" />
+                        </div>
+                    </div>
+                    <!-- Text Input -->
+                    <div class="control-group">
+                        <div class="col-xs-3">
+                            <label class="control-label" for="venue_name">Venue Name</label>
+                            <input type="text" class="form-control" name="venue_name" id="venue_name" placeholder="Enter Venue Name" />
+                        </div>
+                    </div>
+                    <!-- Text Input -->
+                    <div class="control-group">
+                        <div class="col-xs-3">
+                            <label class="control-label" for="search_fltr">Search Filter String</label>
+                            <input type="text" class="form-control" name="search_fltr" id="search_fltr" placeholder="Enter Search Filter String. Populated by default if empty"  />
+                        </div>
+                    </div>
+                    <!-- Text Input -->
+                    <div class="control-group">
+                        <div class="col-xs-3">
+                            <label class="control-label" for="srchIndexesAllowed">Index</label>
+                            <input type="text" class="form-control" name="srchIndexesAllowed" id="srchIndexesAllowed" placeholder="Enter Search Index Allowed"  />
+                        </div>
+                    </div>
+                    <!-- Text Input -->
+                    <div class="control-group">
+                        <div class="col-xs-3">
+                            <label class="control-label" for="defaultApp">Default App Name</label>
+                            <input type="text" class="form-control" name="defaultApp" id="defaultApp" placeholder="Default: App Name"  />
+                        </div>
+                    </div>
+                    <!-- Text Input -->
+                    <div class="control-group">
+                        <div class="col-xs-3">
+                            <label class="control-label" for="imported_roles">Imported Roles</label>
+                                <input type="text" class="form-control" name="imported_roles" id="imported_roles" placeholder="Default: user"  />
+                        </div>
+                    </div>
+                    <div class="row hide">
+                    	<div class="col-lg-12">
+                            <div class="control-group">
+                                <div class="col-xs-3">
+                                	<div class="checkbox"><label class="control-label"><input type="checkbox"   name="host0" id="host0" value="localhost" />Searchhead 0</label></div>
+								</div>
+                                <div class="col-xs-3">
+                                	<div class="checkbox"><label class="control-label"><input type="checkbox"   name="host1" id="host1" value="wisdom-qa-pentaho-1.venuenext.net" />Searchhead 1</label></div>
+								</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Button -->
+                    <div class="row">
+                    	<div class="col-lg-12 align-center padding-top20">
+                        	<button id="submit_button" name="submit_button" class="btn btn-primary">Submit</button>	
+						</div>
+                    </div>
+                </fieldset>
+        	</form>
+            <div class="padding-10"></div>
+		</div>
+	</div>
+</div>
+{% endblock %}

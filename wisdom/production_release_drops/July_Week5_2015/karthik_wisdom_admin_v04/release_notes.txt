@@ -1,0 +1,39 @@
+What is in this release
+-----------------------
+
+This release has following package.
+
+Latest changes and fixes in the wisdom admin interface. Please take a backup of wai_view.py file in appl_wisdom_admin_interface folder before copying the files
+
+
+How to implement the package
+----------------------------
+
+
+Step 1: Please take a backup of wai_view.py file before copying the file to "/data/wisdom/vn_code/wisdom_admin_interface/wisdom_admin_interface/appl_Wisdom_admin_interface" folder
+
+mv /data/wisdom/vn_code/wisdom_admin_interface/wisdom_admin_interface/appl_wisdom_admin_interface/wai_view.py
+ /data/wisdom/vn_code/wisdom_admin_interface/wisdom_admin_interface/appl_wisdom_admin_interface/wai_view_backup.py
+
+
+Step 2: Git-hub path is: /wisdom/production_release_drops/July_Week5_2015/karthik_wisdom_admin_v04 
+
+
+
+Following is the steps to implement the drop:
+
+Step 3: Navigate to the "wisdom_admin_interface" folder
+
+cd wisdom_admin_interface
+
+
+
+Step 4: copy the "wisdom_admin_interface" folder to "/data/wisdom/vn_code/wisdom_admin_interface/wisdom_admin_interface"
+
+cp -r wisdom_admin_interface /data/wisdom/vn_code/wisdom_admin_interface/wisdom_admin_interface/.
+
+
+
+Step 5: copy the "appl_wisdom_admin_interface" folder to "/data/wisdom/vn_code/wisdom_admin_interface/wisdom_admin_interface"
+
+cp -r appl_wisdom_admin_interface /data/wisdom/vn_code/wisdom_admin_interface/appl_wisdom_admin_interface/.

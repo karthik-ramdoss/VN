@@ -1,0 +1,218 @@
+{% block content %}
+{% load staticfiles %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>:: create ::</title>
+        <link href="{% static "css/bootstrap.css" %}" rel="stylesheet" />
+        <link href="{% static "css/style.css" %}" rel="stylesheet" />
+	</head>
+	<body>
+		<div class="main">
+    		<div class="container padding-top5 padding-bottom5">
+            	<div class="row">
+                	<div class="col-lg-3"><img src="{% static "images/vnlogo.jpg" %}" class="img-responsive" alt="VenueNext"></div>
+                    <div class="col-lg-9">
+                    	<ul class="nav nav-pills pull-right margin-top20">
+                        	<li class="active"><a href="../wai_mngvalmas/">Wisdom Admin Interface</a></li>
+                          	<li><a href="../wai_mngprojob/">Manage Project / Jobs</a></li>
+                          	<li><a href="../wai_mngprocmoni">Process Monitoring</a></li>
+                            <li><a href="../wai_mngcliven/">Manage Client / Venue</a></li>
+							<li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">yachut@venuenext.com<span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                <!--<li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li class="divider"></li>-->
+                                <li><a href="/wai_logout/">Logout</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="br-red">
+            	<div class="container padding-top10 padding-bottom20">
+					<input type="hidden" id="hidheadid" name="hidheadid" value="{{ hid }}" />
+                    <input type="hidden" id="hidusname" name="hidusname" value="{{ usna }}" />
+            		<input type="hidden" id="hidustype" name="hidustype" value="{{ ustyp }}" />
+                    {% for pg in pgdet %}
+                        <input type="hidden" id="hidpgnames" name="hidpgnames" value="{{ pg.page_name }}" />
+                        <input type="hidden" id="hidpgviews" name="hidpgviews" value="{{ pg.page_view }}" />
+                        <input type="hidden" id="hidpgedits" name="hidpgedits" value="{{ pg.page_edit }}" />
+                        <input type="hidden" id="hidpgdeles" name="hidpgdeles" value="{{ pg.page_delete }}" />
+                    {% endfor %}
+                	<h1 class="white">Wisdom Validation Master</h1>
+                </div>
+            </div>
+            <div class="">
+                <div class="container padding-bottom20">
+                	<div class="row">
+                        <div class="col-lg-12">
+                            <div class="padding-10"></div>
+                        		<form id="frmwisdomvalmast" name="frmwisdomvalmast" action="/createvalmas/" method="post" onsubmit="return doSaveMasVal();">
+								{% csrf_token %}
+                                	<div class="row">
+                                    	<label class="col-lg-2 padding-top10 align-right">Project Name</label>
+                                        <div class="col-lg-5">
+                                      		<select id="txtprojid" name="txtprojid" class="form-control">
+                                                <option value="">Select</option>
+                                                {% for pd in projdet %}
+                                                <option value="{{ pd.project_id }}">{{ pd.project_name }} ({{ pd.project_id }})</option>
+                                                {% endfor %}
+                                            </select>
+                                      	</div>
+                                    </div>
+                                    <div class="padding-5"></div>
+                                    <div class="row">
+                                    	<label class="col-lg-2 padding-top10 align-right">Validation ID</label>
+                                        <div class="col-lg-5">
+                                      		<input type="text" id="txtmasid" name="txtmasid" class="form-control" readonly="readonly" value="{{ mid }}" />
+                                      	</div>
+                                    </div>
+                                    <div class="padding-5"></div>
+                                    <div class="row">
+                                    	<label class="col-lg-2 padding-top10 align-right">Description</label>
+                                        <div class="col-lg-5">
+                                      		<textarea id="txtdesc" name="txtdesc" rows="6" style="resize:vertical;" class="form-control"></textarea>
+                                      	</div>
+                                    </div>
+                                    <div class="padding-5"></div>
+                                    <div class="row">
+                                    	<label class="col-lg-2 padding-top10 align-right">Object (Associate Entity)</label>
+                                        <div class="col-lg-5">
+                                      		<input type="text" id="txtassoenty" name="txtassoenty" class="form-control" value="" />
+                                      	</div>
+                                    </div>
+                                    <div class="padding-5"></div>
+                                    <div class="row">
+                                    	<label class="col-lg-2 padding-top10 align-right">Threshold Value</label>
+                                        <div class="col-lg-5">
+                                      		<input type="text" id="txtthersval" name="txtthersval" class="form-control" value="" />
+                                      	</div>
+                                    </div>
+                                    <div class="padding-5"></div>
+                                    <div class="row">
+                                    	<label class="col-lg-2 padding-top10 align-right">Status</label>
+                                        <div class="col-lg-5">
+                                      		<input type="text" id="txtstatus" name="txtstatus" class="form-control" value="" />
+                                      	</div>
+                                    </div>
+                                    <div class="padding-5"></div>
+                                    <div class="row">
+                                    	<label class="col-lg-2 padding-top10 align-right">Priority</label>
+                                        <div class="col-lg-5">
+                                      		<input type="text" id="txtpriority" name="txtpriority" class="form-control" value="" />
+                                      	</div>
+                                    </div>
+                                    <div class="padding-5"></div>
+                                    <div class="row">
+                                    	<label class="col-lg-2 padding-top10 align-right">Active</label>
+                                        <div class="col-lg-5">
+                                        	<select id="txtactflag" name="txtactflag" class="form-control">
+                                                <option value="">Select</option>
+                                                <option value="Y">Yes</option>
+                                                <option value="N">No</option>
+                                            </select>
+                                      	</div>
+                                    </div>
+                                    <div class="padding-5"></div>
+                                    <div class="row">
+                                    	<label class="col-lg-2 padding-top10 align-right">Validation Query</label>
+                                        <div class="col-lg-5">
+                                      		<textarea id="txtvalqry" style="resize:vertical;" rows="6" name="txtvalqry" class="form-control"></textarea>
+                                      	</div>
+                                    </div>
+                                    <div class="padding-15"></div>
+                                    <div class="row">
+                                        <div class="col-lg-12 align-center">
+                                      		<input type="submit" id="btnSave" name="btnSave" class="btn btn-success" Value="Save" />
+                                            <input type="button" id="btnCancel" name="btnCancel" class="btn btn-default" Value="Cancel" onClick="doCancel();" />
+                                            <input type="reset" id="btnReset" name="btnReset" class="btn btn-primary" Value="Reset" />
+                                      	</div>
+                                    </div>
+								</form>                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+    	</div>
+        <div class="footer padding-20 text-center">
+            	VENUENEXT IS BASED IN SAN FRANCISCO, SILICON VALLEY AND NEW YORK.
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script src="{% static "js/bootstrap.js" %}"></script>
+        <script language='javascript'>
+		{% if projid != "" or projid != "None" %}
+			document.getElementById("txtprojid").value = "{{ projid }}";
+			//document.getElementById("txtprojid").disabled = true;
+		{% endif %}
+			function doCancel()
+			{
+				document.location.href='../wai_mngvalmas';
+			}
+			function doSaveMasVal()
+			{
+				if(document.getElementById("txtprojid").value == "")
+				{
+					alert("Please select the project name");
+					document.getElementById("txtprojid").focus()
+					return false;
+				}
+				if(document.getElementById("txtmasid").value == "")
+				{
+					alert("Please enter the validation id");
+					document.getElementById("txtmasid").focus()
+					return false;
+				}
+				if(document.getElementById("txtdesc").value == "")
+				{
+					alert("Please enter the description");
+					document.getElementById("txtdesc").focus()
+					return false;
+				}
+				if(document.getElementById("txtassoenty").value == "")
+				{
+					alert("Please enter the associate entity");
+					document.getElementById("txtassoenty").focus()
+					return false;
+				}
+				if(document.getElementById("txtthersval").value == "")
+				{
+					alert("Please enter the threshold value");
+					document.getElementById("txtthersval").focus()
+					return false;
+				}
+				// txtcode, txtdesc, txtassoenty, txtcate, txtthersval, txtstatus, txtprojid, txtpriority, txtactflag, txtvalqry
+				if(document.getElementById("txtstatus").value == "")
+				{
+					alert("Please enter the status");
+					document.getElementById("txtstatus").focus()
+					return false;
+				}
+				if(document.getElementById("txtpriority").value == "")
+				{
+					alert("Please enter the priority");
+					document.getElementById("txtpriority").focus()
+					return false;
+				}
+				if(document.getElementById("txtactflag").value == "")
+				{
+					alert("Please select the active");
+					document.getElementById("txtactflag").focus()
+					return false;
+				}
+				if(document.getElementById("txtvalqry").value == "")
+				{
+					alert("Please enter the validation query");
+					document.getElementById("txtvalqry").focus()
+					return false;
+				}
+				return true;
+			}
+		</script>
+	</body>
+</html>
+{% endblock %}
